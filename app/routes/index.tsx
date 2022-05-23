@@ -9,17 +9,27 @@ export default function Index() {
       {
         name: "Safe For Work",
         currency: "$",
-        image: "https://pbs.twimg.com/media/FRW7flmXEAE2vr_?format=jpg&name=4096x4096",
+        image:
+          "https://imgproxy.soundchaser128.xyz/out6p6x-AXhUwOMUEkVDW2fEdb5iQDwKT2hHvXdAO3Q/rs:fill:0:900:0/dpr:2/g:sm/czM6Ly9zb3VuZGNoYXNlcjEyOC14eXotZmlsZXMvMzEwLnBuZw.webp",
         info: ["One character", "Simple background"],
         price: 350,
       },
       {
         name: "Solo Female",
         currency: "$",
-        image: "https://pbs.twimg.com/media/FR6wAFCXMAItm-q?format=jpg&name=4096x4096",
+        image:
+          "https://pbs.twimg.com/media/FR6wAFCXMAItm-q?format=jpg&name=4096x4096",
         info: ["One character", "More elaborate background"],
         price: 450,
-      }
+      },
+      {
+        name: "Male x Female",
+        currency: "$",
+        image:
+          "https://imgproxy.soundchaser128.xyz/ykDWijnDR2dLWjSKoS4G6d0qOAYTov_uaM1Ku_O7YZ4/rs:fill:0:900:0/dpr:2/g:ea/czM6Ly9zb3VuZGNoYXNlcjEyOC14eXotZmlsZXMvMzAwLnBuZw.webp",
+        info: ["Two characters", "More elaborate background"],
+        price: 450,
+      },
     ],
   }
 

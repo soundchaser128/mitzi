@@ -22,7 +22,7 @@ const BasicTemplateTier: React.FC<{tier: CommissionTier}> = ({tier}) => {
         <img
           src={tier.image}
           alt={tier.name}
-          className="h-[400px] rounded-t-3xl object-cover object-top"
+          className="h-[400px] w-[350px] rounded-t-3xl object-cover object-center"
         />
 
         <div className="mt-4 px-10">
@@ -49,7 +49,7 @@ const BasicTemplate: React.FC<TemplateProps> = ({tiers}) => {
   return (
     <div
       id="preview-frame"
-      className="container flex w-auto bg-sky-50 items-center justify-center gap-2 shadow-lg px-12 py-4"
+      className="container flex w-auto items-center justify-center gap-2 bg-sky-50 px-12 py-4 shadow-lg"
     >
       {tiers.map((tier) => (
         <BasicTemplateTier key={tier.name} tier={tier} />
@@ -66,7 +66,7 @@ const Preview: React.FC<TemplateProps> = (props) => {
   const Template = templates[props.template]
 
   return (
-    <div className="justify-center flex min-h-screen w-full items-center bg-gray-700">
+    <div className="flex min-h-screen w-full items-center justify-center bg-white">
       <Template {...props} />
     </div>
   )
