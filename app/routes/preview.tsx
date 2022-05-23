@@ -6,41 +6,7 @@ import {
 import {faGlobe} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React from "react"
-
-export interface CommissionTier {
-  name: string
-  price: number
-  image: string
-  info: string[]
-}
-
-type TemplateType = "basic"
-
-export type TemplateProps = {
-  template: TemplateType
-  tiers: CommissionTier[]
-  rules: string[]
-  links?: SocialLink[]
-  currency: "dollar" | "euro"
-}
-
-type SocialLink =
-  | {
-      type: "twitter"
-      user: string
-    }
-  | {
-      type: "instagram"
-      user: string
-    }
-  | {
-      type: "website"
-      url: string
-    }
-  | {
-      type: "discord"
-      user: string
-    }
+import type {CommissionTier, TemplateProps} from "~/types"
 
 function formatPrice(price: number, currency: "dollar" | "euro") {
   const numberFormat = new Intl.NumberFormat(

@@ -1,4 +1,4 @@
-import type {CommissionTier, TemplateProps} from "./preview"
+import type {CommissionTier, TemplateProps} from "~/types"
 import * as htmlToImage from "html-to-image"
 import Preview from "./preview"
 import React, {useState} from "react"
@@ -6,6 +6,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faAdd, faTrash} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
 import {Dialog, Transition} from "@headlessui/react"
+import FileDrop from "~/components/FileDrop"
+import useLocalStorage from "~/useLocalStorage"
+
+const localStorageKey = "savedCommissionData"
 
 const styles = {
   label: "font-semibold",
@@ -58,7 +62,8 @@ const ModalForm: React.FC<{
   isOpen: boolean
   openModal: () => void
   closeModal: () => void
-}> = ({data, isOpen, openModal, closeModal}) => {
+  handleSubmit: (data: CommissionTier) => void
+}> = ({data, isOpen, handleSubmit, closeModal}) => {
   const [newTier, setNewTier] = useState<CommissionTier>({
     name: "",
     image: "",
@@ -68,13 +73,17 @@ const ModalForm: React.FC<{
 
   const onSubmit: React.FormEventHandler = (e) => {
     e.preventDefault()
-    console.log(newTier)
-
     closeModal()
+    handleSubmit(newTier)
   }
 
   const onChange = (key: keyof CommissionTier, value: any) => {
     setNewTier({...newTier, [key]: value})
+  }
+
+  const onUpload = (file: File) => {
+    const blobUrl = URL.createObjectURL(file)
+    setNewTier({...newTier, image: blobUrl})
   }
 
   return (
@@ -106,7 +115,7 @@ const ModalForm: React.FC<{
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-xl font-bold leading-6 text-gray-900"
                 >
                   Add a new tier
                 </Dialog.Title>
@@ -140,8 +149,26 @@ const ModalForm: React.FC<{
                       />
                     </div>
 
-                    {/* TODO image upload */}
+                    <div className="flex flex-col">
+                      <label className="mb-1 block font-medium text-gray-700">
+                        Upload image
+                      </label>
+                      <FileDrop onUpload={onUpload} />
+                    </div>
 
+                    <div className="flex flex-col">
+                      <label className="mb-1 block font-medium text-gray-700">
+                        Info
+                      </label>
+                      <textarea
+                        className="text-sm"
+                        value={newTier.info.join("\n")}
+                        onChange={(e) =>
+                          onChange("info", e.target.value.split("\n"))
+                        }
+                        rows={8}
+                      />
+                    </div>
                     <button
                       className={clsx(
                         styles.button.base,
@@ -163,8 +190,9 @@ const ModalForm: React.FC<{
 }
 
 export default function Index() {
-  const [data, setData] = useState(initialState)
+  const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
+  const [newRule, setNewRule] = useState("")
 
   const createScreenshot = async () => {
     const previewElement = document.getElementById("preview-frame")!
@@ -177,28 +205,39 @@ export default function Index() {
   }
 
   const onChange = (key: keyof TemplateProps, value: any) => {
-    setData({...data, [key]: value})
+    const newState = {...data, [key]: value}
+    setData(newState)
   }
 
   const onRemoveTier = (tier: CommissionTier) => {
     if (window.confirm("Are you sure you want to remove this tier?")) {
-      setData({...data, tiers: data.tiers.filter((t) => t.name !== tier.name)})
+      const newState = {
+        ...data,
+        tiers: data.tiers.filter((t) => t.name !== tier.name),
+      }
+      setData(newState)
     }
   }
 
   const onRemoveRule = (rule: string) => {
     if (window.confirm("Are you sure you want to remove this rule?")) {
-      setData({...data, rules: data.rules.filter((r) => r !== rule)})
+      const newState = {...data, rules: data.rules.filter((r) => r !== rule)}
+      setData(newState)
     }
+  }
+
+  const onNewTierAdded = (tier: CommissionTier) => {
+    const newState = {...data, tiers: [...data.tiers, tier]}
+    setData(newState)
   }
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex flex-col bg-sky-50 p-4">
+      <section className="z-10 flex flex-col bg-sky-50 p-4 shadow-xl">
         <h1 className="text-center text-3xl font-bold">
           Commission Sheet Generator
         </h1>
-        <p>
+        <p className="text-sm">
           by{" "}
           <a
             className="text-blue-500 underline hover:text-blue-400"
@@ -214,6 +253,7 @@ export default function Index() {
           closeModal={() => setModalOpen(false)}
           isOpen={modalOpen}
           data={data}
+          handleSubmit={onNewTierAdded}
         />
 
         <form className="-mx-4 mt-4 flex grow flex-col gap-4 px-4 pt-2">
@@ -293,6 +333,24 @@ export default function Index() {
                   </button>
                 </p>
               ))}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  className="grow text-sm"
+                  value={newRule}
+                  onChange={(e) => setNewRule(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className={clsx(styles.button.base, styles.button.green)}
+                  onClick={() => {
+                    setNewRule("")
+                    setData({...data, rules: [...data.rules, newRule]})
+                  }}
+                >
+                  <FontAwesomeIcon icon={faAdd} /> Add rule
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -306,7 +364,7 @@ export default function Index() {
         </button>
       </section>
 
-      <section className="grow">
+      <section className="grow bg-white">
         <Preview {...data} />
       </section>
     </main>
