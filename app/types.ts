@@ -7,7 +7,7 @@ export interface CommissionTier {
 
 export type TemplateType = "basic"
 
-export type TemplateProps = {
+export type CommissionSheet = {
   template: TemplateType
   tiers: CommissionTier[]
   rules: string[]

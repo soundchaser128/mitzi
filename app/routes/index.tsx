@@ -1,9 +1,9 @@
-import type {CommissionTier, TemplateProps} from "~/types"
+import type {CommissionTier, CommissionSheet} from "~/types"
 import * as htmlToImage from "html-to-image"
-import Preview from "./preview"
+import Preview from "~/components/Preview"
 import React, {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faAdd, faTrash} from "@fortawesome/free-solid-svg-icons"
+import {faAdd, faSave, faTrash} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
 import {Dialog, Transition} from "@headlessui/react"
 import FileDrop from "~/components/FileDrop"
@@ -19,9 +19,10 @@ const styles = {
     green: "bg-green-500 hover:bg-green-600",
     red: "bg-red-500 hover:bg-red-600 text-sm",
   },
+  field: "flex flex-col",
 }
 
-const initialState: TemplateProps = {
+const initialState: CommissionSheet = {
   template: "basic",
   currency: "dollar",
   rules: [
@@ -32,19 +33,19 @@ const initialState: TemplateProps = {
   tiers: [
     {
       name: "Safe For Work",
-      image: "https://i.redd.it/bgzblcxgci091.jpg",
+      image: "/images/placeholder.jpg",
       info: ["One character", "Simple background"],
       price: 350,
     },
     {
       name: "Solo Female",
-      image: "https://i.redd.it/bgzblcxgci091.jpg",
+      image: "/images/placeholder.jpg",
       info: ["One character", "More elaborate background"],
       price: 450,
     },
     {
       name: "Male x Female",
-      image: "https://i.redd.it/bgzblcxgci091.jpg",
+      image: "/images/placeholder.jpg",
       info: ["Two characters", "More elaborate background"],
       price: 450,
     },
@@ -58,7 +59,7 @@ const initialState: TemplateProps = {
 }
 
 const ModalForm: React.FC<{
-  data: TemplateProps
+  data: CommissionSheet
   isOpen: boolean
   openModal: () => void
   closeModal: () => void
@@ -204,7 +205,7 @@ export default function Index() {
     link.remove()
   }
 
-  const onChange = (key: keyof TemplateProps, value: any) => {
+  const onChange = (key: keyof CommissionSheet, value: any) => {
     const newState = {...data, [key]: value}
     setData(newState)
   }
@@ -233,7 +234,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-sky-50 p-4 shadow-xl">
+      <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
         <h1 className="text-center text-3xl font-bold">
           Commission Sheet Generator
         </h1>
@@ -256,8 +257,8 @@ export default function Index() {
           handleSubmit={onNewTierAdded}
         />
 
-        <form className="-mx-4 mt-4 flex grow flex-col gap-4 px-4 pt-2">
-          <div className="flex flex-col">
+        <form className="mt-4 flex flex-col gap-8">
+          <div className={styles.field}>
             <h2 className="text-xl font-bold">Select currency</h2>
             <div className="flex gap-4">
               <div>
@@ -284,11 +285,14 @@ export default function Index() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className={styles.field}>
             <h2 className="text-xl font-bold">Commission tiers</h2>
             <div className="flex flex-col">
               {data.tiers.map((tier) => (
-                <p className="flex justify-between" key={tier.name}>
+                <p
+                  className="flex justify-between leading-loose"
+                  key={tier.name}
+                >
                   {tier.name}
 
                   <button
@@ -316,11 +320,11 @@ export default function Index() {
           </div>
 
           <div>
-            <h2 className="text-xl font-bold">Rules</h2>
-            <div className="flex flex-col">
-              {(data.rules || []).map((rule) => (
-                <p className="flex justify-between " key={rule}>
-                  <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap">
+            <div className={styles.field}>
+              <h2 className="text-xl font-bold">Rules</h2>
+              {data.rules.map((rule) => (
+                <p className="flex justify-between" key={rule}>
+                  <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
                     {rule}
                   </span>
 
@@ -358,9 +362,9 @@ export default function Index() {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green)}
+          className={clsx(styles.button.base, styles.button.green, "mt-8")}
         >
-          Save as image
+          <FontAwesomeIcon icon={faSave} /> Save as image
         </button>
       </section>
 

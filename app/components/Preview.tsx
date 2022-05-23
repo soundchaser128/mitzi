@@ -6,7 +6,7 @@ import {
 import {faGlobe} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React from "react"
-import type {CommissionTier, TemplateProps} from "~/types"
+import type {CommissionTier, CommissionSheet} from "~/types"
 
 function formatPrice(price: number, currency: "dollar" | "euro") {
   const numberFormat = new Intl.NumberFormat(
@@ -54,7 +54,7 @@ const BasicTemplateTier: React.FC<{
   )
 }
 
-const BasicTemplate: React.FC<TemplateProps> = ({
+const BasicTemplate: React.FC<CommissionSheet> = ({
   tiers,
   rules,
   links,
@@ -63,7 +63,7 @@ const BasicTemplate: React.FC<TemplateProps> = ({
   return (
     <div
       id="preview-frame"
-      className="container flex w-auto flex-col items-center justify-center gap-8 bg-sky-50 py-8 px-12 shadow-lg"
+      className="container flex w-auto flex-col items-center justify-center gap-8 bg-indigo-50 py-8 px-12 shadow-lg"
     >
       <div className="flex flex-row items-center gap-2">
         {tiers.map((tier) => (
@@ -139,7 +139,7 @@ const templates = {
   basic: BasicTemplate,
 }
 
-const Preview: React.FC<TemplateProps> = (props) => {
+const Preview: React.FC<CommissionSheet> = (props) => {
   const Template = templates[props.template]
 
   return (
