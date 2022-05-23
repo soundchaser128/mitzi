@@ -1,10 +1,11 @@
 import type {CommissionTier, TemplateProps} from "./preview"
 import * as htmlToImage from "html-to-image"
 import Preview from "./preview"
-import {useState} from "react"
+import React, {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faAdd, faMinus, faTrash} from "@fortawesome/free-solid-svg-icons"
+import {faAdd, faTrash} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
+import {Dialog, Transition} from "@headlessui/react"
 
 const styles = {
   label: "font-semibold",
@@ -52,8 +53,118 @@ const initialState: TemplateProps = {
   ],
 }
 
+const ModalForm: React.FC<{
+  data: TemplateProps
+  isOpen: boolean
+  openModal: () => void
+  closeModal: () => void
+}> = ({data, isOpen, openModal, closeModal}) => {
+  const [newTier, setNewTier] = useState<CommissionTier>({
+    name: "",
+    image: "",
+    info: [],
+    price: 0,
+  })
+
+  const onSubmit: React.FormEventHandler = (e) => {
+    e.preventDefault()
+    console.log(newTier)
+
+    closeModal()
+  }
+
+  const onChange = (key: keyof CommissionTier, value: any) => {
+    setNewTier({...newTier, [key]: value})
+  }
+
+  return (
+    <Transition appear show={isOpen} as={React.Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={React.Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={React.Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Add a new tier
+                </Dialog.Title>
+                <div className="mt-2"></div>
+
+                <div className="mt-4">
+                  <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+                    <div className="flex flex-col">
+                      <label className="mb-1 block font-medium text-gray-700">
+                        Tier name
+                      </label>
+                      <input
+                        className="text-sm"
+                        type="text"
+                        placeholder="Name"
+                        value={newTier?.name}
+                        onChange={(e) => onChange("name", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="mb-1 block font-medium text-gray-700">
+                        Price
+                      </label>
+                      <input
+                        className="text-sm"
+                        type="number"
+                        placeholder="Price"
+                        value={newTier?.price || ""}
+                        onChange={(e) => onChange("price", e.target.value)}
+                      />
+                    </div>
+
+                    {/* TODO image upload */}
+
+                    <button
+                      className={clsx(
+                        styles.button.base,
+                        styles.button.green,
+                        "self-end"
+                      )}
+                    >
+                      <FontAwesomeIcon icon={faAdd} /> Add
+                    </button>
+                  </form>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  )
+}
+
 export default function Index() {
   const [data, setData] = useState(initialState)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const createScreenshot = async () => {
     const previewElement = document.getElementById("preview-frame")!
@@ -97,6 +208,13 @@ export default function Index() {
             <code>soundchaser128</code>
           </a>
         </p>
+
+        <ModalForm
+          openModal={() => setModalOpen(true)}
+          closeModal={() => setModalOpen(false)}
+          isOpen={modalOpen}
+          data={data}
+        />
 
         <form className="-mx-4 mt-4 flex grow flex-col gap-4 px-4 pt-2">
           <div className="flex flex-col">
@@ -151,6 +269,7 @@ export default function Index() {
                 styles.button.green,
                 "self-end"
               )}
+              onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon icon={faAdd} /> Add tier
             </button>
