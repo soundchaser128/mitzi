@@ -45,3 +45,19 @@ export function useMatchesData(
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@")
 }
+
+export function get(
+  object: Record<string, unknown>,
+  path: string,
+  defaultValue: unknown = undefined
+): unknown {
+  const parts = path.split(".")
+  for (let part of parts) {
+    if (!object) return defaultValue
+    if (typeof part === "object") {
+      // @ts-ignore
+      object = object[part]
+    }
+  }
+  return object ?? defaultValue
+}
