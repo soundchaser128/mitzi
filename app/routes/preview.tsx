@@ -14,6 +14,7 @@ function formatPrice(price: number, currency: "dollar" | "euro") {
     {
       currency: currency === "dollar" ? "USD" : "EUR",
       style: "currency",
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
       currencyDisplay: "symbol",
     }
