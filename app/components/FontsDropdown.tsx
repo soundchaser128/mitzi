@@ -11,7 +11,7 @@ interface Props {
 }
 
 const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
-  const [selected, setSelected] = useState(fonts[0])
+  const [selected, setSelected] = useState<FontFamiliy | null>(null)
   const [query, setQuery] = useState("")
 
   const filteredFonts =
@@ -32,10 +32,12 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
   return (
     <Combobox value={selected} onChange={handleChange}>
       <div className="relative mt-1">
-        <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+        <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-300 sm:text-sm">
           <Combobox.Input
             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-            displayValue={(font: FontFamiliy) => font.family}
+            displayValue={(font: FontFamiliy | null) =>
+              font?.family || "Select a font"
+            }
             onChange={(event) => setQuery(event.target.value)}
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -64,7 +66,7 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
                   key={person.family}
                   className={({active}) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-teal-600 text-white" : "text-gray-900"
+                      active ? "bg-sky-600 text-white" : "text-gray-900"
                     }`
                   }
                   value={person}
@@ -81,7 +83,7 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
                       {selected ? (
                         <span
                           className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                            active ? "text-white" : "text-teal-600"
+                            active ? "text-white" : "text-sky-600"
                           }`}
                         >
                           <FontAwesomeIcon

@@ -1,4 +1,8 @@
-import type {LinksFunction, MetaFunction} from "@remix-run/node"
+import type {
+  HeadersFunction,
+  LinksFunction,
+  MetaFunction,
+} from "@remix-run/node"
 import {
   Links,
   LiveReload,
@@ -14,9 +18,13 @@ export const links: LinksFunction = () => {
   return [{rel: "stylesheet", href: tailwindStylesheetUrl}]
 }
 
+export let headers: HeadersFunction = () => {
+  return {"Cache-Control": "s-max-age=1, stale-while-revalidate=31540000"}
+}
+
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "Commission Sheet Generator",
   viewport: "width=device-width,initial-scale=1",
 })
 
