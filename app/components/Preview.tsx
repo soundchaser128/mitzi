@@ -1,12 +1,6 @@
-import {
-  faDiscord,
-  faInstagram,
-  faTwitter,
-} from "@fortawesome/free-brands-svg-icons"
-import {faGlobe} from "@fortawesome/free-solid-svg-icons"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React from "react"
 import type {CommissionTier, CommissionSheet} from "~/types"
+import SocialLink from "./SocialLink"
 
 function formatPrice(price: number, currency: "dollar" | "euro") {
   const numberFormat = new Intl.NumberFormat(
@@ -83,51 +77,8 @@ const BasicTemplate: React.FC<CommissionSheet> = ({
 
       {links && (
         <div className="flex gap-4">
-          {links.map((link) => {
-            switch (link.type) {
-              case "twitter":
-                return (
-                  <a
-                    key={link.user}
-                    href={`https://twitter.com/${link.user}`}
-                    className="font-light text-blue-500 hover:text-blue-400"
-                  >
-                    <FontAwesomeIcon icon={faTwitter} /> {link.user}
-                  </a>
-                )
-              case "instagram":
-                return (
-                  <a
-                    key={link.user}
-                    href={`https://instagram.com/${link.user}`}
-                    className="font-light text-blue-500 hover:text-blue-400"
-                  >
-                    <FontAwesomeIcon icon={faInstagram} /> {link.user}
-                  </a>
-                )
-              case "website":
-                return (
-                  <a
-                    key={link.url}
-                    href={link.url}
-                    className="font-light text-blue-500 hover:text-blue-400"
-                  >
-                    <FontAwesomeIcon icon={faGlobe} /> {link.url}
-                  </a>
-                )
-              case "discord":
-                return (
-                  <a
-                    key={link.user}
-                    href={`https://discord.gg/${link.user}`}
-                    className="font-light text-blue-500 hover:text-blue-400"
-                  >
-                    <FontAwesomeIcon icon={faDiscord} /> {link.user}
-                  </a>
-                )
-              default:
-                return null
-            }
+          {links.map((link, idx) => {
+            return <SocialLink key={idx} {...link} />
           })}
         </div>
       )}

@@ -1,3 +1,5 @@
+import type {LinkType} from "./components/SocialLink"
+
 export interface CommissionTier {
   name: string
   price: number
@@ -11,24 +13,11 @@ export type CommissionSheet = {
   template: TemplateType
   tiers: CommissionTier[]
   rules: string[]
-  links?: SocialLink[]
+  links: SocialLink[]
   currency: "dollar" | "euro"
 }
-
-export type SocialLink =
-  | {
-      type: "twitter"
-      user: string
-    }
-  | {
-      type: "instagram"
-      user: string
-    }
-  | {
-      type: "website"
-      url: string
-    }
-  | {
-      type: "discord"
-      user: string
-    }
+export interface SocialLink {
+  type: LinkType
+  data: string
+  display: string
+}

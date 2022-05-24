@@ -8,6 +8,7 @@ import clsx from "clsx"
 import {Dialog, Transition} from "@headlessui/react"
 import FileDrop from "~/components/FileDrop"
 import useLocalStorage from "~/useLocalStorage"
+import SocialLink from "~/components/SocialLink"
 
 const localStorageKey = "savedCommissionData"
 
@@ -52,9 +53,17 @@ const initialState: CommissionSheet = {
   ],
 
   links: [
-    {type: "twitter", user: "soundchaser128"},
-    {type: "website", url: "soundchaser128.xyz"},
-    {type: "discord", user: "soundchaser128#4495"},
+    {type: "twitter", data: "soundchaser128", display: "@soundchaser128"},
+    {
+      type: "website",
+      data: "https://soundchaser128.xyz",
+      display: "www.soundchaser128.xyz",
+    },
+    {
+      type: "discord",
+      data: "http://discord.gg/VUQXF8Y",
+      display: "soundchaser128",
+    },
   ],
 }
 
@@ -319,42 +328,74 @@ export default function Index() {
             </button>
           </div>
 
-          <div>
-            <div className={styles.field}>
-              <h2 className="text-xl font-bold">Rules</h2>
-              {data.rules.map((rule) => (
-                <p className="flex justify-between" key={rule}>
-                  <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
-                    {rule}
-                  </span>
+          <div className={styles.field}>
+            <h2 className="text-xl font-bold">Rules</h2>
+            {data.rules.map((rule) => (
+              <p className="flex justify-between" key={rule}>
+                <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
+                  {rule}
+                </span>
 
-                  <button
-                    type="button"
-                    className="font-sm text-red-500 hover:text-red-600"
-                    onClick={() => onRemoveRule(rule)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </p>
-              ))}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  className="grow text-sm"
-                  value={newRule}
-                  onChange={(e) => setNewRule(e.target.value)}
-                />
                 <button
                   type="button"
-                  className={clsx(styles.button.base, styles.button.green)}
-                  onClick={() => {
-                    setNewRule("")
-                    setData({...data, rules: [...data.rules, newRule]})
-                  }}
+                  className="font-sm text-red-500 hover:text-red-600"
+                  onClick={() => onRemoveRule(rule)}
                 >
-                  <FontAwesomeIcon icon={faAdd} /> Add rule
+                  <FontAwesomeIcon icon={faTrash} />
                 </button>
-              </div>
+              </p>
+            ))}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                className="grow text-sm"
+                value={newRule}
+                onChange={(e) => setNewRule(e.target.value)}
+              />
+              <button
+                type="button"
+                className={clsx(styles.button.base, styles.button.green)}
+                onClick={() => {
+                  setNewRule("")
+                  setData({...data, rules: [...data.rules, newRule]})
+                }}
+              >
+                <FontAwesomeIcon icon={faAdd} /> Add rule
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <h2 className="text-xl font-bold">Socials</h2>
+            {data.links.map((link, idx) => (
+              <p className="flex justify-between leading-loose" key={idx}>
+                <SocialLink {...link} />
+
+                <button
+                  type="button"
+                  className="font-sm text-red-500 hover:text-red-600"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </p>
+            ))}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                className="grow text-sm"
+                value={newRule}
+                onChange={(e) => setNewRule(e.target.value)}
+              />
+              <button
+                type="button"
+                className={clsx(styles.button.base, styles.button.green)}
+                onClick={() => {
+                  setNewRule("")
+                  setData({...data, rules: [...data.rules, newRule]})
+                }}
+              >
+                <FontAwesomeIcon icon={faAdd} /> Add link
+              </button>
             </div>
           </div>
         </form>
