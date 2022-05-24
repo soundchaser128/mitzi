@@ -1,6 +1,18 @@
-export async function loadFont(family: string, url: string) {
-  const fontFace = new FontFace(family, `url(${url})`)
-  const font = await fontFace.load()
-  document.fonts.add(font)
-  return font
+import type {FontFamiliy} from "./fonts.server"
+
+export async function loadFont(font: FontFamiliy) {
+  const urls = [font.files["regular"]]
+  const loadedFonts = await Promise.all(
+    urls.map(async (url) => {
+      const fontFace = new FontFace(font.family, `url(${url})`)
+      return await fontFace.load()
+    })
+  )
+
+  loadedFonts.forEach((font) => document.fonts.add(font))
+
+  return {
+    count: loadedFonts.length,
+    font: font,
+  }
 }

@@ -40,25 +40,24 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   rules,
   links,
   currency,
-  fontFamily,
-  fontUrl,
+  font,
 }) => {
   useEffect(() => {
-    if (fontFamily && fontUrl) {
-      loadFont(fontFamily, fontUrl).then((font) =>
-        console.log("loaded font", font)
+    if (font) {
+      loadFont(font).then((data) =>
+        console.log("loaded font successfully", data)
       )
     }
-  }, [fontUrl, fontFamily])
+  }, [font])
 
   return (
     <div
       id="preview-frame"
       className="container flex w-auto flex-col items-center justify-center gap-8 bg-indigo-50 py-8 px-12 shadow-lg"
       style={
-        fontFamily
+        font
           ? {
-              fontFamily,
+              fontFamily: font.family,
             }
           : {}
       }

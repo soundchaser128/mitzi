@@ -8,15 +8,18 @@ import clsx from "clsx"
 import useLocalStorage from "~/useLocalStorage"
 import AddNewTierModal from "~/components/AddNewTierModal"
 import styles from "~/styles/styles"
+import FontsDropdown from "~/components/FontsDropdown"
+import {useLoaderData} from "@remix-run/react"
+import type {FontFamiliy} from "~/fonts.server"
+import {fetchFonts} from "~/fonts.server"
+import type {LoaderFunction} from "@remix-run/server-runtime"
+import {json} from "@remix-run/server-runtime"
 
 const localStorageKey = "savedCommissionData"
 
 const initialState: CommissionSheet = {
   template: "card",
   currency: "dollar",
-  fontFamily: "Antic",
-  fontUrl:
-    "http://themes.googleusercontent.com/static/fonts/antic/v4/hEa8XCNM7tXGzD0Uk0AipA.ttf",
   rules: [
     "No characters under 18 years of age",
     "No beast, guro, or other extreme content",
@@ -56,16 +59,17 @@ const initialState: CommissionSheet = {
   },
 }
 
-// export const loader: LoaderFunction = async () => {
-//   const fonts = await fetchFonts()
-//   console.log(fonts)
-//   return json(fonts)
-// }
+export const loader: LoaderFunction = async () => {
+  const fonts = await fetchFonts()
+  return json(fonts.items.slice(0, 100))
+}
 
 export default function Index() {
   const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
   const [newRule, setNewRule] = useState("")
+
+  const fonts = useLoaderData<FontFamiliy[]>()
 
   const createScreenshot = async () => {
     const previewElement = document.getElementById("preview-frame")!
@@ -260,6 +264,14 @@ export default function Index() {
                 <FontAwesomeIcon icon={faAdd} /> Add link
               </button>
             </div>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-bold">Select font</h2>
+            <FontsDropdown
+              fonts={fonts}
+              onChange={(font) => onChange("font", font)}
+            />
           </div>
         </form>
 

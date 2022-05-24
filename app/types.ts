@@ -1,3 +1,5 @@
+import type {FontFamiliy} from "./fonts.server"
+
 export interface CommissionTier {
   name: string
   price: number
@@ -18,8 +20,7 @@ export type CommissionSheet = {
     website?: SocialLink
   }
   currency: "dollar" | "euro"
-  fontFamily?: string
-  fontUrl?: string
+  font?: FontFamiliy
 }
 
 export interface SocialLink {

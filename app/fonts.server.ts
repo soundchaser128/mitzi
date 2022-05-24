@@ -1,5 +1,5 @@
 const apiKey = process.env.GOOGLE_FONTS_API_KEY
-const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`
+const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`
 
 export interface FontsResponse {
   kind: string
@@ -18,6 +18,13 @@ export interface FontFamiliy {
 
 export async function fetchFonts(): Promise<FontsResponse> {
   const response = await fetch(apiUrl)
-  const json = await response.json()
-  return json
+  if (response.ok) {
+    const json = await response.json()
+    return json
+  } else {
+    const text = await response.text()
+    throw new Error(
+      `Request failed with status code ${response.status}: ${text}`
+    )
+  }
 }
