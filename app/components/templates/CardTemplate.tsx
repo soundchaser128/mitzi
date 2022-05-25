@@ -1,4 +1,6 @@
+import clsx from "clsx"
 import React, {useEffect} from "react"
+import {getBackgroundColor, getTextColor} from "~/colors"
 import {loadFont} from "~/fonts.client"
 import type {CommissionTier, CommissionSheet} from "~/types"
 import {formatPrice} from "~/utils"
@@ -41,6 +43,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   links,
   currency,
   font,
+  colors,
 }) => {
   useEffect(() => {
     if (font) {
@@ -50,10 +53,17 @@ const CardTemplate: React.FC<CommissionSheet> = ({
     }
   }, [font])
 
+  const backgroundColor = getBackgroundColor(colors.background)
+  const fontColor = getTextColor(colors.text)
+
   return (
     <div
       id="preview-frame"
-      className="container flex w-auto flex-col items-center justify-center gap-8 bg-indigo-50 py-8 px-12 shadow-lg"
+      className={clsx(
+        "container flex w-auto flex-col items-center justify-center gap-8 py-8 px-12 shadow-lg",
+        backgroundColor,
+        fontColor
+      )}
       style={
         font
           ? {

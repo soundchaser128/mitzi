@@ -25,6 +25,10 @@ const initialState: CommissionSheet = {
     "No beast, guro, or other extreme content",
     "Content is under my discretion, I can reject requests I don't want to accept",
   ],
+  colors: {
+    background: "green",
+    text: "yellow",
+  },
   tiers: [
     {
       name: "Safe For Work",

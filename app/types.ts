@@ -1,3 +1,4 @@
+import type {Color} from "./colors"
 import type {FontFamiliy} from "./fonts.server"
 
 export interface CommissionTier {
@@ -21,6 +22,10 @@ export type CommissionSheet = {
   }
   currency: "dollar" | "euro"
   font?: FontFamiliy
+  colors: {
+    background: Color
+    text: Color
+  }
 }
 
 export interface SocialLink {
