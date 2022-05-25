@@ -24,7 +24,7 @@ export let headers: HeadersFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Commission Sheet Generator",
+  title: "Mitzi",
   viewport: "width=device-width,initial-scale=1",
 })
 

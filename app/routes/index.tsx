@@ -116,8 +116,9 @@ export default function Index() {
     <main className="relative flex min-h-screen bg-white">
       <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
         <h1 className="text-center text-3xl font-bold">
-          Commission Sheet Generator
+          Mitzi
         </h1>
+        <p>Generates nice looking commission sheets for you.</p>
         <p className="text-sm">
           by{" "}
           <a
