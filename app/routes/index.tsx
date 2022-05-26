@@ -148,7 +148,7 @@ export default function Index() {
           />
         )}
 
-        <form className="mt-4 flex flex-col gap-8">
+        <form className="mt-4 flex flex-col gap-4">
           <div className={styles.field}>
             <h2 className="text-xl font-bold">Select currency</h2>
             <div className="flex gap-4">
@@ -156,23 +156,25 @@ export default function Index() {
                 <input
                   className="mr-2"
                   type="radio"
+                  id="dollar-radio"
                   name="currency"
                   value="dollar"
                   checked={data.currency === "dollar"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label>US Dollar ($)</label>
+                <label htmlFor="dollar-radio">US Dollar ($)</label>
               </div>
               <div>
                 <input
                   className="mr-2"
+                  id="euro-radio"
                   type="radio"
                   name="currency"
                   value="euro"
                   checked={data.currency === "euro"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label>Euro (€)</label>
+                <label htmlFor="euro-radio">Euro (€)</label>
               </div>
             </div>
           </div>
@@ -318,7 +320,7 @@ export default function Index() {
             </div>
           </div>
 
-          <div>
+          <div className={styles.field}>
             <h2 className="text-xl font-bold">Select font</h2>
             <FontsDropdown
               fonts={fonts}
