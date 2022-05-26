@@ -62,7 +62,7 @@ const AddNewTierModal: React.FC<{
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-sky-50 p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-xl font-bold leading-6 text-gray-900"
@@ -78,7 +78,7 @@ const AddNewTierModal: React.FC<{
                         Tier name
                       </label>
                       <input
-                        className="text-sm"
+                        className={styles.input}
                         type="text"
                         placeholder="Name"
                         value={newTier?.name}
@@ -91,7 +91,7 @@ const AddNewTierModal: React.FC<{
                         Price
                       </label>
                       <input
-                        className="text-sm"
+                        className={styles.input}
                         type="number"
                         placeholder="Price"
                         value={newTier?.price || ""}

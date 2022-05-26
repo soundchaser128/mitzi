@@ -4,6 +4,8 @@ import {getBackgroundColor, getTextColor} from "~/colors"
 import {loadFont} from "~/fonts.client"
 import type {CommissionTier, CommissionSheet} from "~/types"
 import {formatPrice} from "~/utils"
+import type {LinkType} from "../SocialLink"
+import SocialLink from "../SocialLink"
 
 const CardTemplateTier: React.FC<{
   tier: CommissionTier
@@ -88,13 +90,14 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         )}
       </div>
 
-      {/* {links && (
-          <div className="flex gap-4">
-            {links.map((link, idx) => {
-              return <SocialLink key={idx} {...link} />
-            })}
-          </div>
-        )} */}
+      <div className="flex gap-4">
+        {Object.entries(links).map(([type, link]) => {
+          if (!link.trim().length) {
+            return null
+          }
+          return <SocialLink key={type} type={type as LinkType} data={link} />
+        })}
+      </div>
     </div>
   )
 }

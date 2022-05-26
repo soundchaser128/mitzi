@@ -51,15 +51,9 @@ const initialState: CommissionSheet = {
   ],
 
   links: {
-    twitter: {data: "soundchaser128", display: "@soundchaser128"},
-    website: {
-      data: "https://soundchaser128.xyz",
-      display: "soundchaser128.xyz",
-    },
-    discord: {
-      data: "http://discord.gg/VUQXF8Y",
-      display: "soundchaser128",
-    },
+    twitter: "",
+    website: "",
+    discord: "",
   },
 }
 
@@ -112,12 +106,17 @@ export default function Index() {
     setData(newState)
   }
 
+  const onLinkChange = (
+    linkType: keyof CommissionSheet["links"],
+    value: string
+  ) => {
+    setData({...data, links: {...data.links, [linkType]: value}})
+  }
+
   return (
     <main className="relative flex min-h-screen bg-white">
       <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
-        <h1 className="text-center text-3xl font-bold">
-          Mitzi
-        </h1>
+        <h1 className="text-center text-3xl font-bold">Mitzi</h1>
         <p>Generates nice looking commission sheets for you.</p>
         <p className="text-sm">
           by{" "}
@@ -220,7 +219,7 @@ export default function Index() {
             <div className="flex gap-2">
               <input
                 type="text"
-                className="grow text-sm"
+                className={styles.input}
                 value={newRule}
                 onChange={(e) => setNewRule(e.target.value)}
               />
@@ -237,37 +236,43 @@ export default function Index() {
             </div>
           </div>
 
-          <div className={styles.field}>
+          <div className={clsx(styles.field, "gap-2")}>
             <h2 className="text-xl font-bold">Socials</h2>
-            {/* {data.links.map((link, idx) => (
-              <p className="flex justify-between leading-loose" key={idx}>
-                <SocialLink {...link} />
-
-                <button
-                  type="button"
-                  className="font-sm text-red-500 hover:text-red-600"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </p>
-            ))} */}
-            <div className="flex gap-2">
+            <div className="flex items-baseline gap-2">
+              <label className={styles.label}>Twitter</label>
               <input
                 type="text"
-                className="grow text-sm"
-                value={newRule}
-                onChange={(e) => setNewRule(e.target.value)}
+                className={styles.input}
+                value={data.links.twitter || ""}
+                onChange={(e) => onLinkChange("twitter", e.target.value)}
               />
-              <button
-                type="button"
-                className={clsx(styles.button.base, styles.button.green)}
-                onClick={() => {
-                  setNewRule("")
-                  setData({...data, rules: [...data.rules, newRule]})
-                }}
-              >
-                <FontAwesomeIcon icon={faAdd} /> Add link
-              </button>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <label className={styles.label}>Discord</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={data.links.discord || ""}
+                onChange={(e) => onLinkChange("discord", e.target.value)}
+              />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <label className={styles.label}>Website</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={data.links.website || ""}
+                onChange={(e) => onLinkChange("website", e.target.value)}
+              />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <label className={styles.label}>Instagram</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={data.links.instagram || ""}
+                onChange={(e) => onLinkChange("instagram", e.target.value)}
+              />
             </div>
           </div>
 

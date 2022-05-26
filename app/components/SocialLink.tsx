@@ -19,14 +19,28 @@ const icons = {
 const SocialLink: React.FC<{
   type: LinkType
   data: string
-  display: string
   className?: string
-}> = ({type, data, display, className}) => {
+}> = ({type, data, className}) => {
   const icon = icons[type]
   const link =
     type === "website" || type === "discord"
       ? data
       : `https://${type}.com/${data}`
+  let display
+  switch (type) {
+    case "twitter":
+      display = `@${data}`
+      break
+    case "instagram":
+      display = data
+      break
+    case "website":
+      display = data
+      break
+    case "discord":
+      display = data
+      break
+  }
 
   return (
     <a

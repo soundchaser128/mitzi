@@ -15,10 +15,10 @@ export type CommissionSheet = {
   tiers: CommissionTier[]
   rules: string[]
   links: {
-    twitter?: SocialLink
-    discord?: SocialLink
-    instagram?: SocialLink
-    website?: SocialLink
+    twitter?: string
+    discord?: string
+    instagram?: string
+    website?: string
   }
   currency: "dollar" | "euro"
   font?: FontFamiliy
@@ -26,9 +26,4 @@ export type CommissionSheet = {
     background: Color
     text: Color
   }
-}
-
-export interface SocialLink {
-  data: string
-  display: string
 }
