@@ -29,24 +29,24 @@ const initialState: CommissionSheet = {
   },
   tiers: [
     {
-      name: "Safe For Work",
+      name: "Basic",
       image: "/images/placeholder.jpg",
       info: ["One character", "Simple background"],
-      price: 350,
+      price: 45,
       id: getNextId(),
     },
     {
-      name: "Solo Female",
+      name: "Advanced",
       image: "/images/placeholder.jpg",
       info: ["One character", "More elaborate background"],
-      price: 450,
+      price: 55,
       id: getNextId(),
     },
     {
-      name: "Male x Female",
+      name: "Premium",
       image: "/images/placeholder.jpg",
-      info: ["Two characters", "More elaborate background"],
-      price: 450,
+      info: ["Two characters", "Custom ackground scene"],
+      price: 65,
       id: getNextId(),
     },
   ],
@@ -126,18 +126,21 @@ export default function Index() {
   return (
     <main className="relative flex min-h-screen bg-white">
       <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
-        <h1 className="text-center text-3xl font-bold">Mitzi</h1>
-        <p>Generates nice looking commission sheets for you.</p>
-        <p className="text-sm">
-          by{" "}
-          <a
-            className="text-blue-500 underline hover:text-blue-400"
-            href="https://soundchaser128.xyz"
-            tabIndex={-1}
-          >
-            <code>soundchaser128</code>
-          </a>
-        </p>
+        <header className="-mt-4 rounded-b-lg bg-indigo-800 p-3 text-indigo-50 shadow-lg">
+          <h1 className="text-center text-3xl font-bold">Mitzi</h1>
+          <p className="">Generates nice looking commission sheets for you.</p>
+          <p className="">
+            Built by{" "}
+            <a
+              className="underline transition hover:text-gray-100"
+              href="https://soundchaser128.xyz"
+              tabIndex={-1}
+            >
+              soundchaser128.
+            </a>
+          </p>
+        </header>
+
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -180,7 +183,7 @@ export default function Index() {
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Your name</h2>
+            <h2 className="mb-3 text-xl font-bold">Your name</h2>
             <input
               placeholder="Enter your name"
               type="text"
@@ -203,7 +206,7 @@ export default function Index() {
                   <div className="inline-flex gap-1">
                     <button
                       type="button"
-                      className="font-sm text-gray-600 hover:text-gray-700"
+                      className="font-sm text-gray-100 hover:text-gray-100"
                       title="Edit tier"
                       onClick={() => {
                         setTierToEdit(tier)
@@ -215,7 +218,7 @@ export default function Index() {
                     <button
                       type="button"
                       title="Remove tier"
-                      className="font-sm text-red-500 hover:text-red-600"
+                      className="font-sm text-rose-500 hover:text-rose-600"
                       onClick={() => onRemoveTier(tier)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -248,7 +251,7 @@ export default function Index() {
 
                 <button
                   type="button"
-                  className="font-sm text-red-500 hover:text-red-600"
+                  className="font-sm text-rose-500 hover:text-rose-600"
                   onClick={() => onRemoveRule(rule)}
                 >
                   <FontAwesomeIcon icon={faTrash} />
@@ -321,7 +324,7 @@ export default function Index() {
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Select font</h2>
+            <h2 className="mb-2 text-xl font-bold">Select font</h2>
             <FontsDropdown
               fonts={fonts}
               onChange={(font) => onChange("font", font)}
@@ -332,9 +335,9 @@ export default function Index() {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green, "mt-8")}
+          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
         >
-          <FontAwesomeIcon icon={faSave} /> Save as image
+          <FontAwesomeIcon icon={faSave} /> Save As Image
         </button>
       </section>
 
