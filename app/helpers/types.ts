@@ -6,6 +6,7 @@ export interface CommissionTier {
   price: number
   image: string
   info: string[]
+  id: string
 }
 
 export type TemplateType = "card"

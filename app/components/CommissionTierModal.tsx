@@ -1,30 +1,36 @@
-import type {CommissionTier, CommissionSheet} from "~/types"
+import type {CommissionTier} from "~/helpers/types"
 import React, {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faAdd} from "@fortawesome/free-solid-svg-icons"
+import {faCheck} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
 import {Dialog, Transition} from "@headlessui/react"
 import FileDrop from "~/components/FileDrop"
 import styles from "~/styles/styles"
+import {getNextId} from "~/helpers/utils"
 
-const AddNewTierModal: React.FC<{
-  data: CommissionSheet
+const emptyTier = {
+  name: "",
+  image: "",
+  info: [],
+  price: 0,
+  id: getNextId(),
+}
+
+const CommissionTierModal: React.FC<{
   isOpen: boolean
   openModal: () => void
   closeModal: () => void
-  handleSubmit: (data: CommissionTier) => void
-}> = ({data, isOpen, handleSubmit, closeModal}) => {
-  const [newTier, setNewTier] = useState<CommissionTier>({
-    name: "",
-    image: "",
-    info: [],
-    price: 0,
-  })
+  handleSubmit: (data: CommissionTier, type: "edit" | "new") => void
+  tierToEdit?: CommissionTier
+}> = ({isOpen, handleSubmit, closeModal, tierToEdit}) => {
+  const [newTier, setNewTier] = useState<CommissionTier>(
+    tierToEdit || emptyTier
+  )
 
   const onSubmit: React.FormEventHandler = (e) => {
     e.preventDefault()
     closeModal()
-    handleSubmit(newTier)
+    handleSubmit(newTier, tierToEdit ? "edit" : "new")
   }
 
   const onChange = (key: keyof CommissionTier, value: any) => {
@@ -67,7 +73,7 @@ const AddNewTierModal: React.FC<{
                   as="h3"
                   className="text-xl font-bold leading-6 text-gray-900"
                 >
-                  Add a new tier
+                  Edit tier
                 </Dialog.Title>
                 <div className="mt-2"></div>
 
@@ -81,7 +87,7 @@ const AddNewTierModal: React.FC<{
                         className={styles.input}
                         type="text"
                         placeholder="Name"
-                        value={newTier?.name}
+                        value={newTier.name}
                         onChange={(e) => onChange("name", e.target.value)}
                       />
                     </div>
@@ -94,7 +100,7 @@ const AddNewTierModal: React.FC<{
                         className={styles.input}
                         type="number"
                         placeholder="Price"
-                        value={newTier?.price || ""}
+                        value={newTier.price || ""}
                         onChange={(e) => onChange("price", e.target.value)}
                       />
                     </div>
@@ -117,6 +123,7 @@ const AddNewTierModal: React.FC<{
                           onChange("info", e.target.value.split("\n"))
                         }
                         rows={8}
+                        placeholder="Each line is a separate bullet point."
                       />
                     </div>
                     <button
@@ -126,7 +133,7 @@ const AddNewTierModal: React.FC<{
                         "self-end"
                       )}
                     >
-                      <FontAwesomeIcon icon={faAdd} /> Add
+                      <FontAwesomeIcon icon={faCheck} /> Save
                     </button>
                   </form>
                 </div>
@@ -139,4 +146,4 @@ const AddNewTierModal: React.FC<{
   )
 }
 
-export default AddNewTierModal
+export default CommissionTierModal

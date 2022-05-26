@@ -1,5 +1,5 @@
 import React from "react"
-import type {FontFamiliy} from "~/fonts.server"
+import type {FontFamiliy} from "~/helpers/fonts.server"
 import {Combobox, Transition} from "@headlessui/react"
 import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"

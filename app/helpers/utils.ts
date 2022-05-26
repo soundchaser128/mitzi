@@ -1,3 +1,9 @@
+import {nanoid} from "nanoid"
+
+export const getNextId = () => {
+  return nanoid()
+}
+
 export function get(
   object: Record<string, unknown>,
   path: string,

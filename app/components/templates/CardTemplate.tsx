@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import React, {useEffect} from "react"
-import {getBackgroundColor} from "~/colors"
-import {loadFont} from "~/fonts.client"
-import type {CommissionTier, CommissionSheet} from "~/types"
-import {formatPrice} from "~/utils"
+import {getBackgroundColor} from "~/helpers/colors"
+import {loadFont} from "~/helpers/fonts.client"
+import type {CommissionTier, CommissionSheet} from "~/helpers/types"
+import {formatPrice} from "~/helpers/utils"
 import type {LinkType} from "../SocialLink"
 import SocialLink from "../SocialLink"
 
@@ -22,7 +22,7 @@ const CardTemplateTier: React.FC<{
 
         <div className="mt-4 px-10">
           <header className="mb-4 text-center">
-            <h1 className="text-4xl font-bold">{tier.name}</h1>
+            <h2 className="text-4xl font-bold">{tier.name}</h2>
             <p className="text-2xl text-gray-700">
               {formatPrice(tier.price, currency)}
             </p>

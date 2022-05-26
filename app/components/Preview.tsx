@@ -1,5 +1,5 @@
 import React from "react"
-import type {CommissionSheet} from "~/types"
+import type {CommissionSheet} from "~/helpers/types"
 import CardTemplate from "./templates/CardTemplate"
 
 const templates = {

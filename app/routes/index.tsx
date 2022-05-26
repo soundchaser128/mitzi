@@ -1,19 +1,20 @@
-import type {CommissionTier, CommissionSheet} from "~/types"
+import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import * as htmlToImage from "html-to-image"
 import Preview from "~/components/Preview"
 import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faAdd, faSave, faTrash} from "@fortawesome/free-solid-svg-icons"
+import {faAdd, faEdit, faSave, faTrash} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
-import useLocalStorage from "~/useLocalStorage"
-import AddNewTierModal from "~/components/AddNewTierModal"
+import useLocalStorage from "~/helpers/useLocalStorage"
+import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import FontsDropdown from "~/components/FontsDropdown"
 import {useLoaderData} from "@remix-run/react"
-import type {FontFamiliy} from "~/fonts.server"
-import {fetchFonts} from "~/fonts.server"
+import type {FontFamiliy} from "~/helpers/fonts.server"
+import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
+import {getNextId} from "~/helpers/utils"
 
 const localStorageKey = "savedCommissionData"
 
@@ -21,11 +22,7 @@ const initialState: CommissionSheet = {
   template: "card",
   artistName: "",
   currency: "dollar",
-  rules: [
-    "No characters under 18 years of age",
-    "No beast, guro, or other extreme content",
-    "Content is under my discretion, I can reject requests I don't want to accept",
-  ],
+  rules: ["Don't be a jerk", "Nothing illegal"],
   colors: {
     background: "sky",
     text: "sky",
@@ -36,18 +33,21 @@ const initialState: CommissionSheet = {
       image: "/images/placeholder.jpg",
       info: ["One character", "Simple background"],
       price: 350,
+      id: getNextId(),
     },
     {
       name: "Solo Female",
       image: "/images/placeholder.jpg",
       info: ["One character", "More elaborate background"],
       price: 450,
+      id: getNextId(),
     },
     {
       name: "Male x Female",
       image: "/images/placeholder.jpg",
       info: ["Two characters", "More elaborate background"],
       price: 450,
+      id: getNextId(),
     },
   ],
 
@@ -67,6 +67,7 @@ export default function Index() {
   const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
   const [newRule, setNewRule] = useState("")
+  const [tierToEdit, setTierToEdit] = useState<CommissionTier | undefined>()
 
   const fonts = useLoaderData<FontFamiliy[]>()
 
@@ -102,9 +103,17 @@ export default function Index() {
     }
   }
 
-  const onNewTierAdded = (tier: CommissionTier) => {
-    const newState = {...data, tiers: [...data.tiers, tier]}
-    setData(newState)
+  const onNewTierAdded = (tier: CommissionTier, type: "edit" | "new") => {
+    if (type === "new") {
+      const newState = {...data, tiers: [...data.tiers, tier]}
+      setData(newState)
+    } else {
+      const newState = {
+        ...data,
+        tiers: data.tiers.map((t) => (t.id === tier.id ? tier : t)),
+      }
+      setData(newState)
+    }
   }
 
   const onLinkChange = (
@@ -129,14 +138,15 @@ export default function Index() {
             <code>soundchaser128</code>
           </a>
         </p>
-
-        <AddNewTierModal
-          openModal={() => setModalOpen(true)}
-          closeModal={() => setModalOpen(false)}
-          isOpen={modalOpen}
-          data={data}
-          handleSubmit={onNewTierAdded}
-        />
+        {modalOpen && (
+          <AddNewTierModal
+            openModal={() => setModalOpen(true)}
+            closeModal={() => setModalOpen(false)}
+            isOpen={modalOpen}
+            handleSubmit={onNewTierAdded}
+            tierToEdit={tierToEdit}
+          />
+        )}
 
         <form className="mt-4 flex flex-col gap-8">
           <div className={styles.field}>
@@ -182,20 +192,34 @@ export default function Index() {
             <h2 className="text-xl font-bold">Commission tiers</h2>
             <div className="flex flex-col">
               {data.tiers.map((tier) => (
-                <p
-                  className="flex justify-between leading-loose"
-                  key={tier.name}
+                <div
+                  className="flex grow justify-between leading-loose"
+                  key={tier.id}
                 >
                   {tier.name}
 
-                  <button
-                    type="button"
-                    className="font-sm text-red-500 hover:text-red-600"
-                    onClick={() => onRemoveTier(tier)}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </p>
+                  <div className="inline-flex gap-1">
+                    <button
+                      type="button"
+                      className="font-sm text-gray-600 hover:text-gray-700"
+                      title="Edit tier"
+                      onClick={() => {
+                        setTierToEdit(tier)
+                        setModalOpen(true)
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button
+                      type="button"
+                      title="Remove tier"
+                      className="font-sm text-red-500 hover:text-red-600"
+                      onClick={() => onRemoveTier(tier)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
 
