@@ -12,6 +12,7 @@ export type TemplateType = "card"
 
 export type CommissionSheet = {
   template: TemplateType
+  artistName: string
   tiers: CommissionTier[]
   rules: string[]
   links: {

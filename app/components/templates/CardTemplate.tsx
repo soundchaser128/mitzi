@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import React, {useEffect} from "react"
-import {getBackgroundColor, getTextColor} from "~/colors"
+import {getBackgroundColor} from "~/colors"
 import {loadFont} from "~/fonts.client"
 import type {CommissionTier, CommissionSheet} from "~/types"
 import {formatPrice} from "~/utils"
@@ -46,25 +46,24 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   currency,
   font,
   colors,
+  artistName,
 }) => {
   useEffect(() => {
     if (font) {
-      loadFont(font).then((data) =>
-        console.log("loaded font successfully", data)
-      )
+      loadFont(font).catch(console.error)
     }
   }, [font])
 
   const backgroundColor = getBackgroundColor(colors.background)
-  const fontColor = getTextColor(colors.text)
+  // const fontColor = getTextColor(colors.text)
+  const hasSocialLinks = Object.values(links).some(Boolean)
 
   return (
     <div
       id="preview-frame"
       className={clsx(
         "container flex w-auto flex-col items-center justify-center gap-8 py-8 px-12 shadow-lg",
-        backgroundColor,
-        fontColor
+        backgroundColor
       )}
       style={
         font
@@ -74,6 +73,10 @@ const CardTemplate: React.FC<CommissionSheet> = ({
           : {}
       }
     >
+      {artistName && (
+        <h1 className="text-4xl font-bold">{artistName}'s Commission Sheet</h1>
+      )}
+
       <div className="flex flex-row items-center gap-2">
         {tiers.map((tier) => (
           <CardTemplateTier key={tier.name} tier={tier} currency={currency} />
@@ -90,14 +93,16 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         )}
       </div>
 
-      <div className="flex gap-4">
-        {Object.entries(links).map(([type, link]) => {
-          if (!link.trim().length) {
-            return null
-          }
-          return <SocialLink key={type} type={type as LinkType} data={link} />
-        })}
-      </div>
+      {hasSocialLinks && (
+        <div className="flex gap-4">
+          {Object.entries(links).map(([type, link]) => {
+            if (!link.trim().length) {
+              return null
+            }
+            return <SocialLink key={type} type={type as LinkType} data={link} />
+          })}
+        </div>
+      )}
     </div>
   )
 }

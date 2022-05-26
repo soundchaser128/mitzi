@@ -19,6 +19,7 @@ const localStorageKey = "savedCommissionData"
 
 const initialState: CommissionSheet = {
   template: "card",
+  artistName: "",
   currency: "dollar",
   rules: [
     "No characters under 18 years of age",
@@ -26,8 +27,8 @@ const initialState: CommissionSheet = {
     "Content is under my discretion, I can reject requests I don't want to accept",
   ],
   colors: {
-    background: "green",
-    text: "yellow",
+    background: "sky",
+    text: "sky",
   },
   tiers: [
     {
@@ -165,6 +166,18 @@ export default function Index() {
               </div>
             </div>
           </div>
+
+          <div className={styles.field}>
+            <h2 className="text-xl font-bold">Your name</h2>
+            <input
+              placeholder="Enter your name"
+              type="text"
+              className={styles.input}
+              value={data.artistName}
+              onChange={(e) => onChange("artistName", e.target.value)}
+            />
+          </div>
+
           <div className={styles.field}>
             <h2 className="text-xl font-bold">Commission tiers</h2>
             <div className="flex flex-col">
@@ -222,6 +235,7 @@ export default function Index() {
                 className={styles.input}
                 value={newRule}
                 onChange={(e) => setNewRule(e.target.value)}
+                placeholder="New rule"
               />
               <button
                 type="button"
@@ -239,39 +253,43 @@ export default function Index() {
           <div className={clsx(styles.field, "gap-2")}>
             <h2 className="text-xl font-bold">Socials</h2>
             <div className="flex items-baseline gap-2">
-              <label className={styles.label}>Twitter</label>
+              <label className={clsx(styles.label, "w-20")}>Twitter</label>
               <input
                 type="text"
                 className={styles.input}
                 value={data.links.twitter || ""}
                 onChange={(e) => onLinkChange("twitter", e.target.value)}
+                placeholder="Twitter handle"
               />
             </div>
             <div className="flex items-baseline gap-2">
-              <label className={styles.label}>Discord</label>
+              <label className={clsx(styles.label, "w-20")}>Discord</label>
               <input
                 type="text"
                 className={styles.input}
                 value={data.links.discord || ""}
                 onChange={(e) => onLinkChange("discord", e.target.value)}
+                placeholder="Discord server or username"
               />
             </div>
             <div className="flex items-baseline gap-2">
-              <label className={styles.label}>Website</label>
+              <label className={clsx(styles.label, "w-20")}>Website</label>
               <input
                 type="text"
                 className={styles.input}
                 value={data.links.website || ""}
                 onChange={(e) => onLinkChange("website", e.target.value)}
+                placeholder="Website URL"
               />
             </div>
             <div className="flex items-baseline gap-2">
-              <label className={styles.label}>Instagram</label>
+              <label className={clsx(styles.label, "w-20")}>Instagram</label>
               <input
                 type="text"
                 className={styles.input}
                 value={data.links.instagram || ""}
                 onChange={(e) => onLinkChange("instagram", e.target.value)}
+                placeholder="Instagram username"
               />
             </div>
           </div>
