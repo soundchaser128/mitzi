@@ -7,7 +7,7 @@ const styles = {
     green: "bg-green-500 hover:bg-green-600",
     red: "bg-red-500 hover:bg-red-600 text-sm",
   },
-  field: "flex flex-col bg-indigo-800 text-indigo-50 p-3 rounded-lg shadow-md",
+  field: "flex flex-col bg-indigo-100 bg-opacity-50 p-3 rounded-lg shadow-md",
 }
 
 export default styles

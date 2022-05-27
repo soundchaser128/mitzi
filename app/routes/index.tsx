@@ -126,13 +126,13 @@ export default function Index() {
   return (
     <main className="relative flex min-h-screen bg-white">
       <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
-        <header className="-mt-4 rounded-b-lg bg-indigo-800 p-3 text-indigo-50 shadow-lg">
+        <header className="-mt-4 rounded-b-lg bg-indigo-100 bg-opacity-50 p-3 shadow-lg">
           <h1 className="text-center text-3xl font-bold">Mitzi</h1>
           <p className="">Generates nice looking commission sheets for you.</p>
           <p className="">
             Built by{" "}
             <a
-              className="underline transition hover:text-gray-100"
+              className="underline transition text-indigo-400 hover:text-indigo-500"
               href="https://soundchaser128.xyz"
               tabIndex={-1}
             >
