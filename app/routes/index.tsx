@@ -206,7 +206,7 @@ export default function Index() {
                   <div className="inline-flex gap-1">
                     <button
                       type="button"
-                      className="font-sm text-gray-100 hover:text-gray-100"
+                      className="font-sm text-gray-700 hover:text-gray-800"
                       title="Edit tier"
                       onClick={() => {
                         setTierToEdit(tier)
