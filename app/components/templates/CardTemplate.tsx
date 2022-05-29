@@ -82,16 +82,18 @@ const CardTemplate: React.FC<CommissionSheet> = ({
           <CardTemplateTier key={tier.name} tier={tier} currency={currency} />
         ))}
       </div>
-      <div>
-        <h2 className="text-xl font-semibold">Rules</h2>
-        {rules && rules.length > 0 && (
-          <ul className="list-inside list-disc font-light text-gray-600">
-            {rules.map((rule, idx) => (
-              <li key={idx}>{rule}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {rules.length > 0 && (
+        <div>
+          <h2 className="text-xl font-semibold">Rules</h2>
+          {rules && rules.length > 0 && (
+            <ul className="list-inside list-disc font-light text-gray-600">
+              {rules.map((rule, idx) => (
+                <li key={idx}>{rule}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {hasSocialLinks && (
         <div className="flex gap-4">
