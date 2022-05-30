@@ -1,6 +1,8 @@
+import {faSpinner} from "@fortawesome/free-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import React, {useEffect} from "react"
-import {getBackgroundColor} from "~/helpers/colors"
+import React, {useEffect, useState} from "react"
+import {getBackgroundColor, getTextColor} from "~/helpers/colors"
 import {loadFont} from "~/helpers/fonts.client"
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import {formatPrice} from "~/helpers/utils"
@@ -48,15 +50,35 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   colors,
   artistName,
 }) => {
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     if (font) {
-      loadFont(font).catch(console.error)
+      setLoading(true)
+      loadFont(font)
+        .catch(console.error)
+        .finally(() => setLoading(false))
     }
   }, [font])
 
   const backgroundColor = getBackgroundColor(colors.background)
-  // const fontColor = getTextColor(colors.text)
+  const textColor = getTextColor(colors.text)
   const hasSocialLinks = Object.values(links).some(Boolean)
+
+  if (loading) {
+    return (
+      <div
+        id="preview-frame"
+        className={clsx(
+          "flex w-auto items-center justify-center",
+          backgroundColor,
+          textColor
+        )}
+      >
+        <FontAwesomeIcon icon={faSpinner} className="h-12 w-12 animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div

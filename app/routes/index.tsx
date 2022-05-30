@@ -25,7 +25,7 @@ const initialState: CommissionSheet = {
   rules: ["Don't be a jerk", "Nothing illegal"],
   colors: {
     background: "sky",
-    text: "sky",
+    text: "blue",
   },
   tiers: [
     {
@@ -132,7 +132,7 @@ export default function Index() {
           <p className="">
             Built by{" "}
             <a
-              className="underline transition text-indigo-400 hover:text-indigo-500"
+              className="text-indigo-400 underline transition hover:text-indigo-500"
               href="https://soundchaser128.xyz"
               tabIndex={-1}
             >
