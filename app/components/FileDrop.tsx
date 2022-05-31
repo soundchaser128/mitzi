@@ -10,14 +10,13 @@ const styles = {
 }
 interface Props {
   onUpload: (file: File) => void
+  children?: React.ReactNode
 }
 
 const FileDrop: React.FC<Props> = ({onUpload, children}) => {
   const [uploaded, setUploaded] = useState(false)
   const onDrop = useCallback(
-    (acceptedFiles) => {
-      const files = acceptedFiles as FileList
-
+    (files: File[]) => {
       if (files.length > 0) {
         onUpload(files[0])
         setUploaded(true)
