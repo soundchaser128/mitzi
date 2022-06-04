@@ -19,7 +19,7 @@ const CardTemplateTier: React.FC<{
         <img
           src={tier.image}
           alt={tier.name}
-          className="aspect-square rounded-t-3xl object-cover object-center"
+          className="h-[400px] w-[350px] rounded-t-3xl object-cover object-center"
         />
 
         <div className="mt-4 px-10">
