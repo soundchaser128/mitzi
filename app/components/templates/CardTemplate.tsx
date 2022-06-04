@@ -1,11 +1,11 @@
 import {faSpinner} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import React, {useEffect, useState} from "react"
+import React from "react"
 import {getBackgroundColor, getTextColor} from "~/helpers/colors"
-import {loadFont} from "~/helpers/fonts.client"
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import {formatPrice} from "~/helpers/utils"
+import {useCustomFont} from "~/helpers/hooks"
 import type {LinkType} from "../SocialLink"
 import SocialLink from "../SocialLink"
 
@@ -50,17 +50,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   colors,
   artistName,
 }) => {
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (font) {
-      setLoading(true)
-      loadFont(font)
-        .catch(console.error)
-        .finally(() => setLoading(false))
-    }
-  }, [font])
-
+  const loading = useCustomFont(font)
   const backgroundColor = getBackgroundColor(colors.background)
   const textColor = getTextColor(colors.text)
   const hasSocialLinks = Object.values(links).some(Boolean)

@@ -20,7 +20,7 @@ const localStorageKey = "savedCommissionData"
 
 const initialState: CommissionSheet = {
   template: "card",
-  artistName: "",
+  artistName: "Your name",
   currency: "dollar",
   rules: ["Don't be a jerk", "Nothing illegal"],
   colors: {
@@ -45,7 +45,7 @@ const initialState: CommissionSheet = {
     {
       name: "Premium",
       image: "/images/placeholder.jpg",
-      info: ["Two characters", "Custom ackground scene"],
+      info: ["Two characters", "Custom background scene"],
       price: 65,
       id: getNextId(),
     },
