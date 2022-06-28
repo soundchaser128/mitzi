@@ -3,7 +3,13 @@ import * as htmlToImage from "html-to-image"
 import Preview from "~/components/Preview"
 import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faAdd, faEdit, faSave, faTrash} from "@fortawesome/free-solid-svg-icons"
+import {
+  faAdd,
+  faEdit,
+  faSave,
+  faSpinner,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
 import useLocalStorage from "~/helpers/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
@@ -68,17 +74,24 @@ export default function Index() {
   const [modalOpen, setModalOpen] = useState(false)
   const [newRule, setNewRule] = useState("")
   const [tierToEdit, setTierToEdit] = useState<CommissionTier | undefined>()
+  const [rendering, setRendering] = useState(false)
 
   const fonts = useLoaderData<FontFamiliy[]>()
 
   const createScreenshot = async () => {
-    const previewElement = document.getElementById("preview-frame")!
-    const dataUrl = await htmlToImage.toPng(previewElement)
-    const link = document.createElement("a")
-    link.download = "commission-sheet.png"
-    link.href = dataUrl
-    link.click()
-    link.remove()
+    setRendering(true)
+    try {
+      const previewElement = document.getElementById("preview-frame")!
+      const dataUrl = await htmlToImage.toPng(previewElement)
+      const link = document.createElement("a")
+      link.download = `commission-sheet-${data.artistName.toLowerCase()}.png`
+      link.href = dataUrl
+      link.click()
+      link.remove()
+      await new Promise((resolve) => window.setTimeout(resolve, 500))
+    } finally {
+      setRendering(false)
+    }
   }
 
   const onChange = (key: keyof CommissionSheet, value: any) => {
@@ -255,6 +268,7 @@ export default function Index() {
                   onClick={() => onRemoveRule(rule)}
                 >
                   <FontAwesomeIcon icon={faTrash} />
+                  <span className="sr-only">Delete</span>
                 </button>
               </p>
             ))}
@@ -336,8 +350,20 @@ export default function Index() {
           id="download-button"
           onClick={createScreenshot}
           className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
+          disabled={rendering}
+          type="button"
         >
-          <FontAwesomeIcon icon={faSave} /> Save As Image
+          {rendering && (
+            <>
+              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />{" "}
+              Rendering...
+            </>
+          )}
+          {!rendering && (
+            <>
+              <FontAwesomeIcon icon={faSave} /> Save As Image
+            </>
+          )}
         </button>
       </section>
 
