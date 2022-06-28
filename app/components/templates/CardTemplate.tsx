@@ -19,7 +19,7 @@ const CardTemplateTier: React.FC<{
         <img
           src={tier.image}
           alt={tier.name}
-          className="h-[400px] w-[350px] rounded-t-3xl object-cover object-center"
+          className="aspect-square max-h-96 rounded-t-3xl object-cover object-center"
         />
 
         <div className="mt-4 px-10">
@@ -89,7 +89,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         <h1 className="text-4xl font-bold">{artistName}'s Commission Sheet</h1>
       )}
 
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row items-start gap-2">
         {tiers.map((tier) => (
           <CardTemplateTier key={tier.name} tier={tier} currency={currency} />
         ))}
