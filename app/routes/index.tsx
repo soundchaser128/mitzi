@@ -65,8 +65,13 @@ const initialState: CommissionSheet = {
 }
 
 export const loader: LoaderFunction = async () => {
-  const fonts = await fetchFonts()
-  return json(fonts.items.slice(0, 100))
+  try {
+    const fonts = await fetchFonts()
+    return json(fonts.items.slice(0, 100))
+  } catch (e) {
+    console.error(e)
+    return json([])
+  }
 }
 
 export default function Index() {
@@ -134,6 +139,12 @@ export default function Index() {
     value: string
   ) => {
     setData({...data, links: {...data.links, [linkType]: value}})
+  }
+
+  const onResetData = () => {
+    if (confirm("Are you sure you want to reset all the data to the initial state?")) {
+      setData(initialState)
+    }
   }
 
   return (
@@ -364,6 +375,17 @@ export default function Index() {
               <FontAwesomeIcon icon={faSave} /> Save As Image
             </>
           )}
+        </button>
+        <button
+          id="reset-button"
+          onClick={onResetData}
+          className={clsx(
+            styles.button.base,
+            styles.button.red,
+            "mx-2 mt-1 w-auto self-end"
+          )}
+        >
+          <FontAwesomeIcon icon={faTrash} /> Reset
         </button>
       </section>
 
