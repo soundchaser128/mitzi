@@ -21,6 +21,7 @@ import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
+import {faGithub} from "@fortawesome/free-brands-svg-icons"
 
 const localStorageKey = "savedCommissionData"
 
@@ -142,7 +143,11 @@ export default function Index() {
   }
 
   const onResetData = () => {
-    if (confirm("Are you sure you want to reset all the data to the initial state?")) {
+    if (
+      confirm(
+        "Are you sure you want to reset all the data to the initial state?"
+      )
+    ) {
       setData(initialState)
     }
   }
@@ -153,7 +158,7 @@ export default function Index() {
         <header className="-mt-4 rounded-b-lg bg-indigo-100 bg-opacity-50 p-3 shadow-lg">
           <h1 className="text-center text-3xl font-bold">Mitzi</h1>
           <p className="">Generates nice looking commission sheets for you.</p>
-          <p className="">
+          <p className="mb-2">
             Built by{" "}
             <a
               className="text-indigo-400 underline transition hover:text-indigo-500"
@@ -161,6 +166,15 @@ export default function Index() {
               tabIndex={-1}
             >
               soundchaser128.
+            </a>
+          </p>
+          <p>
+            This application is open source and available on{" "}
+            <a
+              className="text-indigo-400 underline transition hover:text-indigo-500"
+              href="https://github.com/soundchaser128/mitzi"
+            >
+              Github
             </a>
           </p>
         </header>
@@ -382,7 +396,7 @@ export default function Index() {
           className={clsx(
             styles.button.base,
             styles.button.red,
-            "mx-2 mt-1 w-auto self-end"
+            "mx-2 mt-2 w-auto self-end"
           )}
         >
           <FontAwesomeIcon icon={faTrash} /> Reset
