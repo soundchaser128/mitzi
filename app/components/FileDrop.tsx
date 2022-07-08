@@ -24,7 +24,16 @@ const FileDrop: React.FC<Props> = ({onUpload, children}) => {
     },
     [onUpload]
   )
-  const {getRootProps, getInputProps} = useDropzone({onDrop})
+  const {getRootProps, getInputProps} = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png"],
+      "image/jpeg": [".jpeg", ".jpg", ".jpe"],
+      "image/webp": [".webp"],
+      "image/gif": [".gif"],
+      "image/svg+xml": [".svg"],
+    },
+  })
 
   return (
     <div
