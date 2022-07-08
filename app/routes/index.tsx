@@ -75,6 +75,9 @@ export const loader: LoaderFunction = async () => {
   }
 }
 
+export const sleep = (ms: number) =>
+  new Promise((resolve) => window.setTimeout(resolve, ms))
+
 export default function Index() {
   const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
@@ -88,13 +91,17 @@ export default function Index() {
     setRendering(true)
     try {
       const previewElement = document.getElementById("preview-frame")!
-      const dataUrl = await htmlToImage.toPng(previewElement)
+      const dataUrl = await htmlToImage.toPng(previewElement, {
+        pixelRatio: 1,
+        width: 1200,
+        height: 800,
+      })
       const link = document.createElement("a")
       link.download = `commission-sheet-${data.artistName.toLowerCase()}.png`
       link.href = dataUrl
       link.click()
       link.remove()
-      await new Promise((resolve) => window.setTimeout(resolve, 500))
+      await sleep(500)
     } finally {
       setRendering(false)
     }

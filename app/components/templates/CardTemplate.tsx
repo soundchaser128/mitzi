@@ -95,27 +95,29 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         ))}
       </div>
       {rules.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold">Rules</h2>
-          {rules && rules.length > 0 && (
-            <ul className="list-inside list-disc font-light text-gray-600">
-              {rules.map((rule, idx) => (
-                <li key={idx}>{rule}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <section className="w-full flex justify-center">
+          <div>
+            <h2 className="text-xl font-semibold">Rules</h2>
+            {rules && rules.length > 0 && (
+              <ul className="list-inside list-disc font-light text-gray-600">
+                {rules.map((rule, idx) => (
+                  <li key={idx}>{rule}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
       )}
 
       {hasSocialLinks && (
-        <div className="flex gap-4">
+        <section className="flex gap-4">
           {Object.entries(links).map(([type, link]) => {
             if (!link.trim().length) {
               return null
             }
             return <SocialLink key={type} type={type as LinkType} data={link} />
           })}
-        </div>
+        </section>
       )}
     </div>
   )
