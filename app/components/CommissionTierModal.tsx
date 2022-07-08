@@ -8,13 +8,13 @@ import FileDrop from "~/components/FileDrop"
 import styles from "~/styles/styles"
 import {getNextId} from "~/helpers/utils"
 
-const emptyTier = {
+const emptyTier = () => ({
   name: "",
   image: "",
   info: [],
   price: 0,
   id: getNextId(),
-}
+})
 
 const CommissionTierModal: React.FC<{
   isOpen: boolean
@@ -24,7 +24,7 @@ const CommissionTierModal: React.FC<{
   tierToEdit?: CommissionTier
 }> = ({isOpen, handleSubmit, closeModal, tierToEdit}) => {
   const [newTier, setNewTier] = useState<CommissionTier>(
-    tierToEdit || emptyTier
+    tierToEdit || emptyTier()
   )
 
   const onSubmit: React.FormEventHandler = (e) => {
