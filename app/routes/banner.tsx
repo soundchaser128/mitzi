@@ -7,7 +7,13 @@ import {nanoid} from "nanoid"
 import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faSave, faSpinner} from "@fortawesome/free-solid-svg-icons"
+import {
+  faAngleDown,
+  faAngleUp,
+  faSave,
+  faSpinner,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons"
 import FontsDropdown from "~/components/FontsDropdown"
 import {useLoaderData} from "@remix-run/react"
 import type {FontFamiliy} from "~/helpers/fonts.server"
@@ -23,6 +29,16 @@ function calculateAspectRatioForImage(numberOfImages: number): Fraction {
     return BANNER_ASPECT_RATIO
   } else {
     return BANNER_ASPECT_RATIO.div(numberOfImages)
+  }
+}
+
+function clamp(n: number, min: number, max: number) {
+  if (n > max) {
+    return max
+  } else if (n < min) {
+    return min
+  } else {
+    return n
   }
 }
 
@@ -91,12 +107,34 @@ const BannerGenerator: React.FC = () => {
     setSettings({...settings, [key]: value})
   }
 
+  const onRemoveImage = (image: Image) => {
+    setFiles((files) => files.filter((f) => f.id !== image.id))
+  }
+
+  const onShiftImage = (idx: number, direction: "up" | "down") => {
+    setFiles(
+      produce(files, (draft) => {
+        const newIndex = clamp(
+          idx + (direction === "up" ? -1 : 1),
+          0,
+          draft.length - 1
+        )
+        const tmp = draft[newIndex]
+        draft[newIndex] = draft[idx]
+        draft[idx] = tmp
+        // draft[idx] =
+        // draft[newIndex] =
+        // draft[idx] = tmp
+      })
+    )
+  }
+
   const imageRatio = calculateAspectRatioForImage(files.length).simplify()
   const aspectRatio = `${imageRatio.n} / ${imageRatio.d}`
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col bg-indigo-50 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-indigo-50 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -133,7 +171,7 @@ const BannerGenerator: React.FC = () => {
             checked={settings.darken}
             onChange={(e) => onChange("darken", e.target.checked)}
             title="darken the image?"
-            className="h-6 w-6"
+            className="h-6 w-6 self-end"
           />
         </div>
         <div className={styles.field}>
@@ -203,6 +241,36 @@ const BannerGenerator: React.FC = () => {
                       }
                     />
                   </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <button
+                        className="p-1 hover:text-gray-800"
+                        type="button"
+                        title="Shift up"
+                        onClick={() => onShiftImage(idx, "up")}
+                      >
+                        <FontAwesomeIcon icon={faAngleUp} />
+                      </button>
+
+                      <button
+                        className="p-1 hover:text-gray-800"
+                        type="button"
+                        title="Shift down"
+                        onClick={() => onShiftImage(idx, "down")}
+                      >
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      title="Remove image"
+                      className="font-sm p-1 text-rose-500 hover:text-rose-600"
+                      onClick={() => onRemoveImage(file)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -231,7 +299,7 @@ const BannerGenerator: React.FC = () => {
               <img
                 className={clsx(
                   "object-cover",
-                  settings.darken && "brightness-75"
+                  settings.darken && "brightness-50"
                 )}
                 src={image.url}
                 key={idx}
