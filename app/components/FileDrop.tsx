@@ -9,23 +9,32 @@ const styles = {
     "flex w-full items-center justify-center rounded-xl border bg-white p-8 text-center text-lg text-black shadow-lg",
 }
 interface Props {
-  onUpload: (file: File) => void
+  onUpload: (files: File[]) => void
   children?: React.ReactNode
+  allowMultiple?: boolean
+  doneAfterUpload?: boolean
 }
 
-const FileDrop: React.FC<Props> = ({onUpload, children}) => {
+const FileDrop: React.FC<Props> = ({
+  onUpload,
+  children,
+  allowMultiple,
+  doneAfterUpload,
+}) => {
   const [uploaded, setUploaded] = useState(false)
   const onDrop = useCallback(
     (files: File[]) => {
-      if (files.length > 0) {
-        onUpload(files[0])
+      onUpload(files)
+
+      if (files.length > 0 && doneAfterUpload) {
         setUploaded(true)
       }
     },
-    [onUpload]
+    [onUpload, doneAfterUpload]
   )
   const {getRootProps, getInputProps} = useDropzone({
     onDrop,
+    maxFiles: allowMultiple ? undefined : 1,
     accept: {
       "image/png": [".png"],
       "image/jpeg": [".jpeg", ".jpg", ".jpe"],

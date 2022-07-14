@@ -20,7 +20,7 @@ const Index: React.FC = () => {
         <div className="flex justify-around">
           <Link
             className="flex items-baseline rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 px-3 py-2 text-white hover:from-blue-600 hover:to-blue-700"
-            to="/commission"
+            to="/commission-sheet"
           >
             <FontAwesomeIcon icon={faPaintBrush} className="mr-1" />
             Commission sheet generator

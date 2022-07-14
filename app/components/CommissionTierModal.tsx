@@ -37,8 +37,8 @@ const CommissionTierModal: React.FC<{
     setNewTier({...newTier, [key]: value})
   }
 
-  const onUpload = (file: File) => {
-    const blobUrl = URL.createObjectURL(file)
+  const onUpload = (files: File[]) => {
+    const blobUrl = URL.createObjectURL(files[0])
     setNewTier({...newTier, image: blobUrl})
   }
 
@@ -109,7 +109,7 @@ const CommissionTierModal: React.FC<{
                       <label className="mb-1 block font-medium text-gray-700">
                         Upload image
                       </label>
-                      <FileDrop onUpload={onUpload} />
+                      <FileDrop doneAfterUpload onUpload={onUpload} />
                     </div>
 
                     <div className="flex flex-col">
