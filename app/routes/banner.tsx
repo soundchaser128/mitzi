@@ -8,6 +8,13 @@ import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSave, faSpinner} from "@fortawesome/free-solid-svg-icons"
+import FontsDropdown from "~/components/FontsDropdown"
+import {useLoaderData} from "@remix-run/react"
+import type {FontFamiliy} from "~/helpers/fonts.server"
+import {fetchFonts} from "~/helpers/fonts.server"
+import type {LoaderFunction} from "@remix-run/server-runtime"
+import {json} from "@remix-run/server-runtime"
+import {useCustomFont} from "~/helpers/hooks"
 
 const BANNER_ASPECT_RATIO = new Fraction(3, 1)
 
@@ -29,20 +36,35 @@ interface Image {
 interface Settings {
   darken: boolean
   text: string
+  font?: FontFamiliy
+  fontColor: string
 }
 
 const defaultSettings: Settings = {
   darken: true,
   text: "Your Name",
+  fontColor: "#ffffff",
 }
 
-const Index: React.FC = () => {
+export const loader: LoaderFunction = async () => {
+  try {
+    const fonts = await fetchFonts()
+    return json(fonts.items.slice(0, 100))
+  } catch (e) {
+    console.error(e)
+    return json([])
+  }
+}
+
+const BannerGenerator: React.FC = () => {
+  const fonts = useLoaderData<FontFamiliy[]>()
   const [files, setFiles] = useState<Image[]>([])
   const [settings, setSettings] = useState(defaultSettings)
   const {createScreenshot, rendering} = useRenderContent({
     containerId: "banner-frame",
     fileName: "twitter-banner.png",
   })
+  const loading = useCustomFont(settings.font)
 
   const onUpload = (uploads: File[]) => {
     const images = uploads.map((file) => ({
@@ -74,7 +96,7 @@ const Index: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-scroll bg-indigo-50 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col bg-indigo-50 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -111,10 +133,32 @@ const Index: React.FC = () => {
             checked={settings.darken}
             onChange={(e) => onChange("darken", e.target.checked)}
             title="darken the image?"
+            className="h-6 w-6"
           />
         </div>
         <div className={styles.field}>
-          <label className={styles.label}>Upload images</label>
+          <h2 className="mb-2 text-xl font-bold">Select font</h2>
+          <div>
+            <FontsDropdown
+              fonts={fonts}
+              onChange={(font) => onChange("font", font)}
+            />
+          </div>
+        </div>
+        <div className={styles.field}>
+          <h2 className="mb-2 text-xl font-bold">Select font color</h2>
+
+          <input
+            type="color"
+            value={settings.fontColor}
+            onChange={(e) => onChange("fontColor", e.target.value)}
+            title="Font color picker"
+            className="h-12 w-36 cursor-pointer self-end"
+          />
+        </div>
+
+        <div className={styles.field}>
+          <h2 className="mb-3 text-xl font-bold">Upload images</h2>
           <FileDrop allowMultiple onUpload={onUpload} />
         </div>
         {files.length > 0 && (
@@ -175,6 +219,7 @@ const Index: React.FC = () => {
             )}
             style={{
               aspectRatio: "3 / 1",
+              fontFamily: settings.font ? settings.font.family : undefined,
             }}
           >
             {files.length === 0 && (
@@ -198,7 +243,10 @@ const Index: React.FC = () => {
               />
             ))}
             {files.length > 0 && (
-              <h1 className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold text-white">
+              <h1
+                className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold"
+                style={{color: settings.fontColor}}
+              >
                 {settings.text}
               </h1>
             )}
@@ -209,4 +257,4 @@ const Index: React.FC = () => {
   )
 }
 
-export default Index
+export default BannerGenerator

@@ -1,9 +1,11 @@
 import React from "react"
 import type {CommissionSheet} from "~/helpers/types"
 import CardTemplate from "./templates/CardTemplate"
+import NoBorderTemplate from "./templates/NoBorderTemplate"
 
 const templates = {
   card: CardTemplate,
+  "no-border": NoBorderTemplate,
 }
 
 const Preview: React.FC<CommissionSheet> = (props) => {
