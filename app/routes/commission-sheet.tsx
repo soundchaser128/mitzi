@@ -11,7 +11,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
-import useLocalStorage from "~/helpers/useLocalStorage"
+import useLocalStorage from "~/hooks/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import FontsDropdown from "~/components/FontsDropdown"
@@ -21,7 +21,7 @@ import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
-import {faGithub} from "@fortawesome/free-brands-svg-icons"
+import useRenderContent from "~/hooks/useRenderContent"
 
 const localStorageKey = "savedCommissionData"
 
@@ -83,29 +83,13 @@ export default function Index() {
   const [modalOpen, setModalOpen] = useState(false)
   const [newRule, setNewRule] = useState("")
   const [tierToEdit, setTierToEdit] = useState<CommissionTier | undefined>()
-  const [rendering, setRendering] = useState(false)
-
+  const {rendering, createScreenshot} = useRenderContent({
+    containerId: "preview-frame",
+    fileName: `commission-sheet-${data.artistName}.png`,
+    width: 1280,
+    height: 800,
+  })
   const fonts = useLoaderData<FontFamiliy[]>()
-
-  const createScreenshot = async () => {
-    setRendering(true)
-    try {
-      const previewElement = document.getElementById("preview-frame")!
-      const dataUrl = await htmlToImage.toPng(previewElement, {
-        pixelRatio: 1,
-        width: 1200,
-        height: 800,
-      })
-      const link = document.createElement("a")
-      link.download = `commission-sheet-${data.artistName.toLowerCase()}.png`
-      link.href = dataUrl
-      link.click()
-      link.remove()
-      await sleep(500)
-    } finally {
-      setRendering(false)
-    }
-  }
 
   const onChange = (key: keyof CommissionSheet, value: any) => {
     const newState = {...data, [key]: value}

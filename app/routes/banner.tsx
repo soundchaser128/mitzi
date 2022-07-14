@@ -5,6 +5,9 @@ import Fraction from "fraction.js"
 import clsx from "clsx"
 import {nanoid} from "nanoid"
 import produce from "immer"
+import useRenderContent from "~/hooks/useRenderContent"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faSave, faSpinner} from "@fortawesome/free-solid-svg-icons"
 
 const BANNER_ASPECT_RATIO = new Fraction(3, 1)
 
@@ -36,6 +39,10 @@ const defaultSettings: Settings = {
 const Index: React.FC = () => {
   const [files, setFiles] = useState<Image[]>([])
   const [settings, setSettings] = useState(defaultSettings)
+  const {createScreenshot, rendering} = useRenderContent({
+    containerId: "banner-frame",
+    fileName: "twitter-banner.png",
+  })
 
   const onUpload = (uploads: File[]) => {
     const images = uploads.map((file) => ({
@@ -67,7 +74,26 @@ const Index: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-indigo-50 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-scroll bg-indigo-50 p-2 shadow-xl">
+        <button
+          id="download-button"
+          onClick={createScreenshot}
+          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
+          disabled={rendering}
+          type="button"
+        >
+          {rendering && (
+            <>
+              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />{" "}
+              Rendering...
+            </>
+          )}
+          {!rendering && (
+            <>
+              <FontAwesomeIcon icon={faSave} /> Save As Image
+            </>
+          )}
+        </button>
         <div className={styles.field}>
           <h2 className="mb-3 text-xl font-bold">Your name</h2>
           <input
@@ -93,14 +119,14 @@ const Index: React.FC = () => {
         </div>
         {files.length > 0 && (
           <div className={styles.field}>
-            <div className="flex flex-col gap-2 divide-y divide-gray-500">
+            <div className="flex flex-col gap-4 ">
               {files.map((file, idx) => (
                 <div key={file.id}>
                   <p>
                     File <strong>{file.name}</strong>
                   </p>
                   <div className="flex flex-col">
-                    <label>X position</label>
+                    <label>Position left/right</label>
                     <input
                       min="0"
                       max="100"
@@ -117,7 +143,7 @@ const Index: React.FC = () => {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label>Y position</label>
+                    <label>Position up/down</label>
                     <input
                       min="0"
                       max="100"
