@@ -95,7 +95,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         ))}
       </div>
       {rules.length > 0 && (
-        <section className="w-full flex justify-center">
+        <section className="flex w-full justify-center">
           <div>
             <h2 className="text-xl font-semibold">Rules</h2>
             {rules && rules.length > 0 && (

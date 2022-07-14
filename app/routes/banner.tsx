@@ -1,6 +1,5 @@
 const Index: React.FC = () => {
-    return <main></main>
-  }
-  
-  export default Index
-  
+  return <main></main>
+}
+
+export default Index

@@ -161,31 +161,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-indigo-50 p-4 shadow-xl">
-        <header className="-mt-4 rounded-b-lg bg-indigo-100 bg-opacity-50 p-3 shadow-lg">
-          <h1 className="text-center text-3xl font-bold">Mitzi</h1>
-          <p className="">Generates nice looking commission sheets for you.</p>
-          <p className="mb-2">
-            Built by{" "}
-            <a
-              className="text-indigo-400 underline transition hover:text-indigo-500"
-              href="https://soundchaser128.xyz"
-              tabIndex={-1}
-            >
-              soundchaser128.
-            </a>
-          </p>
-          <p>
-            This application is open source and available on{" "}
-            <a
-              className="text-indigo-400 underline transition hover:text-indigo-500"
-              href="https://github.com/soundchaser128/mitzi"
-            >
-              Github
-            </a>
-          </p>
-        </header>
-
+      <section className="z-10 flex flex-col bg-indigo-50 p-2 shadow-xl">
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -196,7 +172,7 @@ export default function Index() {
           />
         )}
 
-        <form className="mt-4 flex flex-col gap-4">
+        <form className="flex flex-col gap-4">
           <div className={styles.field}>
             <h2 className="text-xl font-bold">Select currency</h2>
             <div className="flex gap-4">
