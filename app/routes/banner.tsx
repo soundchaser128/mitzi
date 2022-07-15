@@ -100,9 +100,13 @@ const BannerGenerator: React.FC = () => {
   }))
   const [files, setFiles] = useState<Image[]>([])
   const [settings, setSettings] = useState(defaultSettings)
+  const bannerName = aspectRatios
+    .find((r) => r.value === settings.aspectRatio)
+    ?.text?.split(" ")[0]
+    ?.toLowerCase()
   const {createScreenshot, rendering} = useRenderContent({
     containerId: "banner-frame",
-    fileName: "twitter-banner.png",
+    fileName: `${bannerName}-banner-${settings.text}.png`,
   })
   const loading = useCustomFont(settings.font)
 
