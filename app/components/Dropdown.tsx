@@ -1,31 +1,36 @@
 import React from "react"
-import type {FontFamiliy} from "~/helpers/fonts.server"
 import {Combobox, Transition} from "@headlessui/react"
 import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons"
 
+interface DropdownValue {
+  text: string
+  value: string
+}
+
 interface Props {
-  fonts: FontFamiliy[]
-  onChange: (font: FontFamiliy) => void
+  placeholder: string
+  values: DropdownValue[]
+  onChange: (value: DropdownValue) => void
   id?: string
 }
 
-const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
-  const [selected, setSelected] = useState<FontFamiliy | null>(null)
+const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
+  const [selected, setSelected] = useState<DropdownValue | null>(null)
   const [query, setQuery] = useState("")
 
-  const filteredFonts =
+  const filteredValues =
     query === ""
-      ? fonts
-      : fonts.filter((person) =>
-          person.family
+      ? values
+      : values.filter((v) =>
+          v.text
             .toLowerCase()
             .replace(/\s+/g, "")
             .includes(query.toLowerCase().replace(/\s+/g, ""))
         )
 
-  const handleChange = (value: FontFamiliy) => {
+  const handleChange = (value: DropdownValue) => {
     setSelected(value)
     onChange(value)
   }
@@ -36,8 +41,8 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
         <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-300 sm:text-sm">
           <Combobox.Input
             className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:ring-0"
-            displayValue={(font: FontFamiliy | null) =>
-              font?.family || "Select a font"
+            displayValue={(value: DropdownValue | null) =>
+              value?.text || placeholder
             }
             onChange={(event) => setQuery(event.target.value)}
           />
@@ -57,20 +62,20 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
           afterLeave={() => setQuery("")}
         >
           <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredFonts.length === 0 && query !== "" ? (
+            {filteredValues.length === 0 && query !== "" ? (
               <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                 Nothing found.
               </div>
             ) : (
-              filteredFonts.map((person) => (
+              filteredValues.map((value) => (
                 <Combobox.Option
-                  key={person.family}
+                  key={value.value}
                   className={({active}) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                       active ? "bg-sky-600 text-white" : "text-gray-900"
                     }`
                   }
-                  value={person}
+                  value={value}
                 >
                   {({selected, active}) => (
                     <>
@@ -79,7 +84,7 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
                           selected ? "font-medium" : "font-normal"
                         }`}
                       >
-                        {person.family}
+                        {value.text}
                       </span>
                       {selected ? (
                         <span
@@ -106,4 +111,4 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
   )
 }
 
-export default FontsDropdown
+export default Dropdown

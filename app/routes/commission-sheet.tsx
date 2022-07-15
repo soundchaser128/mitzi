@@ -1,5 +1,4 @@
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
-import * as htmlToImage from "html-to-image"
 import Preview from "~/components/Preview"
 import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
@@ -14,7 +13,7 @@ import clsx from "clsx"
 import useLocalStorage from "~/hooks/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
-import FontsDropdown from "~/components/FontsDropdown"
+import Dropdown from "~/components/Dropdown"
 import {useLoaderData} from "@remix-run/react"
 import type {FontFamiliy} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
@@ -90,6 +89,10 @@ export default function Index() {
     height: 800,
   })
   const fonts = useLoaderData<FontFamiliy[]>()
+  const fontDropdownValues = fonts.map((font) => ({
+    text: font.family,
+    value: font.family,
+  }))
 
   const onChange = (key: keyof CommissionSheet, value: any) => {
     const newState = {...data, [key]: value}
@@ -331,9 +334,15 @@ export default function Index() {
 
           <div className={styles.field}>
             <h2 className="mb-2 text-xl font-bold">Select font</h2>
-            <FontsDropdown
-              fonts={fonts}
-              onChange={(font) => onChange("font", font)}
+            <Dropdown
+              placeholder="Choose a font"
+              values={fontDropdownValues}
+              onChange={(font) =>
+                onChange(
+                  "font",
+                  fonts.find((f) => f.family === font.value)
+                )
+              }
             />
           </div>
         </form>

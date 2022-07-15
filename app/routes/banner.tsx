@@ -14,21 +14,37 @@ import {
   faSpinner,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons"
-import FontsDropdown from "~/components/FontsDropdown"
 import {useLoaderData} from "@remix-run/react"
 import type {FontFamiliy} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
+import Dropdown from "~/components/Dropdown"
 
-const BANNER_ASPECT_RATIO = new Fraction(3, 1)
+const aspectRatios = [
+  {
+    text: "Twitter (3:1)",
+    value: "3/1",
+  },
+  {
+    text: "Pixiv (2:1)",
+    value: "2/1",
+  },
+  {
+    text: "Reddit (10:3)",
+    value: "10/3",
+  },
+]
 
-function calculateAspectRatioForImage(numberOfImages: number): Fraction {
+function calculateAspectRatioForImage(
+  aspectRatio: Fraction,
+  numberOfImages: number
+): Fraction {
   if (numberOfImages === 0) {
-    return BANNER_ASPECT_RATIO
+    return aspectRatio
   } else {
-    return BANNER_ASPECT_RATIO.div(numberOfImages)
+    return aspectRatio.div(numberOfImages)
   }
 }
 
@@ -55,6 +71,7 @@ interface Settings {
   text: string
   font?: FontFamiliy
   fontColor: string
+  aspectRatio: string
 }
 
 const defaultSettings: Settings = {
@@ -62,6 +79,7 @@ const defaultSettings: Settings = {
   lowerContrast: false,
   text: "Your Name",
   fontColor: "#ffffff",
+  aspectRatio: aspectRatios[0].value,
 }
 
 export const loader: LoaderFunction = async () => {
@@ -76,6 +94,10 @@ export const loader: LoaderFunction = async () => {
 
 const BannerGenerator: React.FC = () => {
   const fonts = useLoaderData<FontFamiliy[]>()
+  const fontDropdownValues = fonts.map((font) => ({
+    text: font.family,
+    value: font.family,
+  }))
   const [files, setFiles] = useState<Image[]>([])
   const [settings, setSettings] = useState(defaultSettings)
   const {createScreenshot, rendering} = useRenderContent({
@@ -128,7 +150,10 @@ const BannerGenerator: React.FC = () => {
     )
   }
 
-  const imageRatio = calculateAspectRatioForImage(files.length).simplify()
+  const imageRatio = calculateAspectRatioForImage(
+    new Fraction(settings.aspectRatio),
+    files.length
+  ).simplify()
   const aspectRatio = `${imageRatio.n} / ${imageRatio.d}`
 
   return (
@@ -154,6 +179,15 @@ const BannerGenerator: React.FC = () => {
           )}
         </button>
         <form className="mt-4 flex flex-col gap-4 px-2">
+          <div className="flex flex-col">
+            <label className={styles.label}>Choose format</label>
+            <Dropdown
+              placeholder="Choose banner format"
+              values={aspectRatios}
+              onChange={(value) => onChange("aspectRatio", value.value)}
+            />
+          </div>
+
           <div className="flex flex-col">
             <label className={styles.label}>Your name</label>
             <input
@@ -191,10 +225,16 @@ const BannerGenerator: React.FC = () => {
 
           <div className="flex flex-col">
             <label className={styles.label}>Select font</label>
-            <FontsDropdown
+            <Dropdown
               id="fonts-dropdown"
-              fonts={fonts}
-              onChange={(font) => onChange("font", font)}
+              values={fontDropdownValues}
+              onChange={(font) =>
+                onChange(
+                  "font",
+                  fonts.find((f) => f.family === font.value)
+                )
+              }
+              placeholder="Choose a font"
             />
           </div>
 
@@ -302,7 +342,7 @@ const BannerGenerator: React.FC = () => {
               // [withPadding && "gap-2 p-2"]
             )}
             style={{
-              aspectRatio: "3 / 1",
+              aspectRatio: settings.aspectRatio,
               fontFamily: settings.font ? settings.font.family : undefined,
             }}
           >
