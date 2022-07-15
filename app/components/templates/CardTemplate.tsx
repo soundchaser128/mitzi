@@ -2,7 +2,7 @@ import {faSpinner} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
 import React from "react"
-import {getBackgroundColor, getTextColor} from "~/helpers/colors"
+import {getBackgroundColor} from "~/helpers/colors"
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import {formatPrice} from "~/helpers/utils"
 import {useCustomFont} from "~/helpers/hooks"
@@ -52,7 +52,6 @@ const CardTemplate: React.FC<CommissionSheet> = ({
 }) => {
   const loading = useCustomFont(font)
   const backgroundColor = getBackgroundColor(colors.background)
-  const textColor = getTextColor(colors.text)
   const hasSocialLinks = Object.values(links).some(Boolean)
 
   if (loading) {
@@ -61,8 +60,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         id="preview-frame"
         className={clsx(
           "flex w-auto items-center justify-center",
-          backgroundColor,
-          textColor
+          backgroundColor
         )}
       >
         <FontAwesomeIcon icon={faSpinner} className="h-12 w-12 animate-spin" />
@@ -95,27 +93,29 @@ const CardTemplate: React.FC<CommissionSheet> = ({
         ))}
       </div>
       {rules.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold">Rules</h2>
-          {rules && rules.length > 0 && (
-            <ul className="list-inside list-disc font-light text-gray-600">
-              {rules.map((rule, idx) => (
-                <li key={idx}>{rule}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <section className="flex w-full justify-center">
+          <div>
+            <h2 className="text-xl font-semibold">Rules</h2>
+            {rules && rules.length > 0 && (
+              <ul className="list-inside list-disc font-light text-gray-600">
+                {rules.map((rule, idx) => (
+                  <li key={idx}>{rule}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
       )}
 
       {hasSocialLinks && (
-        <div className="flex gap-4">
+        <section className="flex gap-4">
           {Object.entries(links).map(([type, link]) => {
             if (!link.trim().length) {
               return null
             }
             return <SocialLink key={type} type={type as LinkType} data={link} />
           })}
-        </div>
+        </section>
       )}
     </div>
   )

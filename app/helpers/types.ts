@@ -9,7 +9,7 @@ export interface CommissionTier {
   id: string
 }
 
-export type TemplateType = "card"
+export type TemplateType = "card" | "no-border"
 
 export type CommissionSheet = {
   template: TemplateType

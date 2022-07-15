@@ -8,9 +8,10 @@ import {faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons"
 interface Props {
   fonts: FontFamiliy[]
   onChange: (font: FontFamiliy) => void
+  id?: string
 }
 
-const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
+const FontsDropdown: React.FC<Props> = ({fonts, onChange, id}) => {
   const [selected, setSelected] = useState<FontFamiliy | null>(null)
   const [query, setQuery] = useState("")
 
@@ -31,10 +32,10 @@ const FontsDropdown: React.FC<Props> = ({fonts, onChange}) => {
 
   return (
     <Combobox value={selected} onChange={handleChange}>
-      <div className="relative mt-1">
+      <div id={id} className="relative mt-1">
         <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-300 sm:text-sm">
           <Combobox.Input
-            className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+            className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-700 focus:ring-0"
             displayValue={(font: FontFamiliy | null) =>
               font?.family || "Select a font"
             }
