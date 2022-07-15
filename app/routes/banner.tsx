@@ -51,6 +51,7 @@ interface Image {
 
 interface Settings {
   darken: boolean
+  lowerContrast: boolean
   text: string
   font?: FontFamiliy
   fontColor: string
@@ -58,6 +59,7 @@ interface Settings {
 
 const defaultSettings: Settings = {
   darken: true,
+  lowerContrast: false,
   text: "Your Name",
   fontColor: "#ffffff",
 }
@@ -122,9 +124,6 @@ const BannerGenerator: React.FC = () => {
         const tmp = draft[newIndex]
         draft[newIndex] = draft[idx]
         draft[idx] = tmp
-        // draft[idx] =
-        // draft[newIndex] =
-        // draft[idx] = tmp
       })
     )
   }
@@ -134,7 +133,7 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-indigo-50 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -154,53 +153,70 @@ const BannerGenerator: React.FC = () => {
             </>
           )}
         </button>
-        <div className={styles.field}>
-          <h2 className="mb-3 text-xl font-bold">Your name</h2>
-          <input
-            placeholder="Enter your name"
-            type="text"
-            className={styles.input}
-            value={settings.text}
-            onChange={(e) => onChange("text", e.target.value)}
-          />
-        </div>
-        <div className={styles.field}>
-          <h2 className="mb-3 text-xl font-bold">Darken images?</h2>
-          <input
-            type="checkbox"
-            checked={settings.darken}
-            onChange={(e) => onChange("darken", e.target.checked)}
-            title="darken the image?"
-            className="h-6 w-6 self-end"
-          />
-        </div>
-        <div className={styles.field}>
-          <h2 className="mb-2 text-xl font-bold">Select font</h2>
-          <div>
+        <form className="mt-4 flex flex-col gap-4 px-2">
+          <div className="flex flex-col">
+            <label className={styles.label}>Your name</label>
+            <input
+              placeholder="Enter your name"
+              type="text"
+              className={styles.input}
+              value={settings.text}
+              onChange={(e) => onChange("text", e.target.value)}
+            />
+          </div>
+          <div className="flex flex-row justify-between">
+            <label htmlFor="darken-image" className={styles.label}>
+              Darken images?
+            </label>
+            <input
+              id="darken-image"
+              type="checkbox"
+              checked={settings.darken}
+              onChange={(e) => onChange("darken", e.target.checked)}
+              className="h-6 w-6 self-end"
+            />
+          </div>
+          <div className="flex flex-row justify-between">
+            <label htmlFor="lower-contrast" className={styles.label}>
+              Lower contrast?
+            </label>
+            <input
+              id="lower-contrast"
+              type="checkbox"
+              checked={settings.lowerContrast}
+              onChange={(e) => onChange("lowerContrast", e.target.checked)}
+              className="h-6 w-6 self-end"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className={styles.label}>Select font</label>
             <FontsDropdown
+              id="fonts-dropdown"
               fonts={fonts}
               onChange={(font) => onChange("font", font)}
             />
           </div>
-        </div>
-        <div className={styles.field}>
-          <h2 className="mb-2 text-xl font-bold">Select font color</h2>
 
-          <input
-            type="color"
-            value={settings.fontColor}
-            onChange={(e) => onChange("fontColor", e.target.value)}
-            title="Font color picker"
-            className="h-12 w-36 cursor-pointer self-end"
-          />
-        </div>
+          <div className="flex flex-col">
+            <label className={styles.label}>Select font color</label>
 
-        <div className={styles.field}>
-          <h2 className="mb-3 text-xl font-bold">Upload images</h2>
-          <FileDrop allowMultiple onUpload={onUpload} />
-        </div>
+            <input
+              type="color"
+              value={settings.fontColor}
+              onChange={(e) => onChange("fontColor", e.target.value)}
+              title="Font color picker"
+              className="h-12 w-36 cursor-pointer self-end"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className={styles.label}>Upload images</label>
+            <FileDrop allowMultiple onUpload={onUpload} />
+          </div>
+        </form>
         {files.length > 0 && (
-          <div className={styles.field}>
+          <div className="mt-4">
             <div className="flex flex-col gap-4 ">
               {files.map((file, idx) => (
                 <div key={file.id}>
@@ -299,7 +315,8 @@ const BannerGenerator: React.FC = () => {
               <img
                 className={clsx(
                   "object-cover",
-                  settings.darken && "brightness-50"
+                  settings.darken && "brightness-50",
+                  settings.lowerContrast && "contrast-50"
                 )}
                 src={image.url}
                 key={idx}
