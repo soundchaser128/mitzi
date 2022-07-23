@@ -22,12 +22,16 @@ import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
 import ImageCropModal from "~/components/ImageCropModal"
-import {Crop} from "react-image-crop"
+import type {Crop} from "react-image-crop"
 
 const aspectRatios = [
   {
     text: "Twitter (3:1)",
     value: "3/1",
+  },
+  {
+    text: "Patreon (4:1)",
+    value: "4/1",
   },
   {
     text: "Pixiv (2:1)",
