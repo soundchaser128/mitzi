@@ -1,7 +1,7 @@
-import {useState} from "react"
+import {useRef, useState} from "react"
 import FileDrop from "~/components/FileDrop"
 import styles from "../styles/styles"
-import Fraction from "fraction.js"
+import type Fraction from "fraction.js"
 import clsx from "clsx"
 import {nanoid} from "nanoid"
 import produce from "immer"
@@ -10,6 +10,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {
   faAngleDown,
   faAngleUp,
+  faEdit,
   faSave,
   faSpinner,
   faTrash,
@@ -22,7 +23,8 @@ import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
 import ImageCropModal from "~/components/ImageCropModal"
-import type {Crop} from "react-image-crop"
+import type {Crop, PixelCrop} from "react-image-crop"
+import Banner from "~/components/Banner"
 
 const aspectRatios = [
   {
@@ -64,19 +66,14 @@ function clamp(n: number, min: number, max: number) {
   }
 }
 
-interface Image {
+export interface Image {
   url: string
-  crop: {
-    x: number
-    y: number
-    width?: number
-    height?: number
-  }
+  crop: PixelCrop
   name: string
   id: string
 }
 
-interface Settings {
+export interface Settings {
   darken: boolean
   lowerContrast: boolean
   text: string
@@ -120,16 +117,24 @@ const BannerGenerator: React.FC = () => {
     fileName: `${bannerName}-banner-${settings.text}.png`,
   })
   useCustomFont(settings.font)
-  const [modalOpen, setModalOpen] = useState<Image | null>()
+  const [modalImage, setModalImage] = useState<Image | null>(null)
 
   const onUpload = (uploads: File[]) => {
-    const images = uploads.map((file) => ({
+    const images: Image[] = uploads.map((file) => ({
       url: URL.createObjectURL(file),
-      crop: {x: 0, y: 0},
+      crop: {x: 0, y: 0, width: 1000, height: 1000, unit: "px"},
       name: file.name,
       id: nanoid(),
     }))
     setFiles(files.concat(images))
+  }
+
+  const onChange = (key: keyof Settings, value: any) => {
+    setSettings({...settings, [key]: value})
+  }
+
+  const onRemoveImage = (image: Image) => {
+    setFiles((files) => files.filter((f) => f.id !== image.id))
   }
 
   const onChangeImageCrop = (id: string, crop: Crop) => {
@@ -141,17 +146,10 @@ const BannerGenerator: React.FC = () => {
           y: crop.y,
           width: crop.width,
           height: crop.height,
+          unit: "px",
         }
       })
     )
-  }
-
-  const onChange = (key: keyof Settings, value: any) => {
-    setSettings({...settings, [key]: value})
-  }
-
-  const onRemoveImage = (image: Image) => {
-    setFiles((files) => files.filter((f) => f.id !== image.id))
   }
 
   const onShiftImage = (idx: number, direction: "up" | "down") => {
@@ -170,27 +168,11 @@ const BannerGenerator: React.FC = () => {
   }
 
   const onEditCrop = (image: Image) => {
-    setModalOpen(image)
+    setModalImage(image)
   }
-
-  const imageRatio = calculateAspectRatioForImage(
-    new Fraction(settings.aspectRatio),
-    files.length
-  ).simplify()
-  const aspectRatio = `${imageRatio.n} / ${imageRatio.d}`
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <ImageCropModal
-        onSave={onChangeImageCrop}
-        isOpen={Boolean(modalOpen)}
-        closeModal={() => setModalOpen(null)}
-        imageBlobUrl={modalOpen?.url}
-        imageId={modalOpen?.id}
-        title="Edit image"
-        aspectRatio={imageRatio.valueOf()}
-      />
-
       <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
         <button
           id="download-button"
@@ -298,10 +280,11 @@ const BannerGenerator: React.FC = () => {
                   </p>
                   <button
                     type="button"
-                    className={styles.button.base}
+                    className="rounded-lg bg-purple-400 px-2 py-1 text-white transition hover:bg-purple-500"
                     onClick={() => onEditCrop(file)}
                   >
-                    Edit image crop
+                    <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                    <strong>Edit image crop</strong>
                   </button>
                   <div className="flex justify-between">
                     <div>
@@ -341,47 +324,13 @@ const BannerGenerator: React.FC = () => {
       </section>
       <section className="grow bg-neutral-500">
         <div className="flex min-h-screen w-full items-center justify-center">
-          <div
-            id="banner-frame"
-            className={clsx(
-              "container relative flex h-auto max-w-full grid-flow-row bg-white"
-              // [withPadding && "gap-2 p-2"]
-            )}
-            style={{
-              aspectRatio: settings.aspectRatio,
-              fontFamily: settings.font ? settings.font.family : undefined,
-            }}
-          >
-            {files.length === 0 && (
-              <div className="flex h-full w-full items-center justify-center text-xl">
-                Upload some images to get started.
-              </div>
-            )}
-            {files.map((image, idx) => (
-              <img
-                className={clsx(
-                  "object-cover",
-                  settings.darken && "brightness-50",
-                  settings.lowerContrast && "contrast-50"
-                )}
-                src={image.url}
-                key={idx}
-                alt="user-uploaded data"
-                style={{
-                  aspectRatio,
-                  objectPosition: `${image.crop.x}px ${image.crop.y}px`,
-                }}
-              />
-            ))}
-            {files.length > 0 && (
-              <h1
-                className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold"
-                style={{color: settings.fontColor}}
-              >
-                {settings.text}
-              </h1>
-            )}
-          </div>
+          <Banner
+            files={files}
+            settings={settings}
+            onChangeImageCrop={onChangeImageCrop}
+            modalImage={modalImage}
+            setModalImage={setModalImage}
+          />
         </div>
       </section>
     </main>
