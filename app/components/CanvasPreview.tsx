@@ -67,7 +67,7 @@ export function canvasPreview(
 
 interface Props {
   src: string
-  crop: PixelCrop
+  crop?: PixelCrop
 }
 
 const CanvasPreview: React.FC<Props> = ({src, crop}) => {
@@ -76,18 +76,13 @@ const CanvasPreview: React.FC<Props> = ({src, crop}) => {
 
   useEffect(() => {
     if (imgRef.current && canvasRef.current) {
-      canvasPreview(imgRef.current, canvasRef.current, crop)
+      // canvasPreview(imgRef.current, canvasRef.current, crop)
     }
   }, [crop])
 
   return (
     <>
-      <canvas
-        ref={canvasRef}
-        width={crop.width}
-        height={crop.height}
-        className="object-contain"
-      />
+      <canvas ref={canvasRef} className="object-contain" />
       <img ref={imgRef} src={src} className="hidden" alt="Invisible" />
     </>
   )

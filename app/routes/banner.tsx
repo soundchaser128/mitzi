@@ -22,9 +22,8 @@ import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
-import ImageCropModal from "~/components/ImageCropModal"
 import type {Crop, PixelCrop} from "react-image-crop"
-import Banner from "~/components/Banner"
+import CanvasBanner from "~/components/CanvasBanner"
 
 const aspectRatios = [
   {
@@ -45,17 +44,6 @@ const aspectRatios = [
   },
 ]
 
-function calculateAspectRatioForImage(
-  aspectRatio: Fraction,
-  numberOfImages: number
-): Fraction {
-  if (numberOfImages === 0) {
-    return aspectRatio
-  } else {
-    return aspectRatio.div(numberOfImages)
-  }
-}
-
 function clamp(n: number, min: number, max: number) {
   if (n > max) {
     return max
@@ -68,7 +56,7 @@ function clamp(n: number, min: number, max: number) {
 
 export interface Image {
   url: string
-  crop: PixelCrop
+  crop?: PixelCrop
   name: string
   id: string
 }
@@ -324,7 +312,7 @@ const BannerGenerator: React.FC = () => {
       </section>
       <section className="grow bg-neutral-500">
         <div className="flex min-h-screen w-full items-center justify-center">
-          <Banner
+          <CanvasBanner
             files={files}
             settings={settings}
             onChangeImageCrop={onChangeImageCrop}

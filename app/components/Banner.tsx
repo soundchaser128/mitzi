@@ -6,7 +6,7 @@ import ImageCropModal from "./ImageCropModal"
 import type {Crop} from "react-image-crop"
 import CanvasPreview from "./canvasPreview"
 
-interface Props {
+export interface BannerProps {
   files: Image[]
   settings: Settings
   onChangeImageCrop: (id: string, crop: Crop) => void
@@ -25,7 +25,7 @@ function calculateAspectRatioForImage(
   }
 }
 
-const Banner: React.FC<Props> = ({
+const Banner: React.FC<BannerProps> = ({
   files,
   settings,
   onChangeImageCrop,
@@ -81,7 +81,7 @@ const Banner: React.FC<Props> = ({
         //     objectPosition: `${image.crop.x}px ${image.crop.y}px`,
         //   }}
         // />
-        <CanvasPreview key={idx} crop={image.crop} src={image.url} />
+        <CanvasPreview key={idx} crop={image?.crop} src={image.url} />
       ))}
       {files.length > 0 && (
         <h1
