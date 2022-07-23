@@ -13,9 +13,13 @@ import {
 } from "@remix-run/react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
+import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
 
 export const links: LinksFunction = () => {
-  return [{rel: "stylesheet", href: tailwindStylesheetUrl}]
+  return [
+    {rel: "stylesheet", href: tailwindStylesheetUrl},
+    {rel: "stylesheet", href: reactCropStyles},
+  ]
 }
 
 export let headers: HeadersFunction = () => {

@@ -21,6 +21,7 @@ import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
+import ImageCropModal from "~/components/ImageCropModal"
 
 const aspectRatios = [
   {
@@ -108,7 +109,8 @@ const BannerGenerator: React.FC = () => {
     containerId: "banner-frame",
     fileName: `${bannerName}-banner-${settings.text}.png`,
   })
-  const loading = useCustomFont(settings.font)
+  useCustomFont(settings.font)
+  const [modalOpen, setModalOpen] = useState<Image | null>()
 
   const onUpload = (uploads: File[]) => {
     const images = uploads.map((file) => ({
@@ -154,6 +156,10 @@ const BannerGenerator: React.FC = () => {
     )
   }
 
+  const onEditCrop = (image: Image, idx: number) => {
+    setModalOpen(image)
+  }
+
   const imageRatio = calculateAspectRatioForImage(
     new Fraction(settings.aspectRatio),
     files.length
@@ -162,6 +168,13 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
+      <ImageCropModal
+        isOpen={Boolean(modalOpen)}
+        closeModal={() => setModalOpen(null)}
+        imageBlobUrl={modalOpen?.url}
+        title="Edit image"
+      />
+
       <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
         <button
           id="download-button"
@@ -357,6 +370,7 @@ const BannerGenerator: React.FC = () => {
             )}
             {files.map((image, idx) => (
               <img
+                onClick={() => onEditCrop(image, idx)}
                 className={clsx(
                   "object-cover",
                   settings.darken && "brightness-50",
@@ -371,14 +385,14 @@ const BannerGenerator: React.FC = () => {
                 }}
               />
             ))}
-            {files.length > 0 && (
+            {/* {files.length > 0 && (
               <h1
                 className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold"
                 style={{color: settings.fontColor}}
               >
                 {settings.text}
               </h1>
-            )}
+            )} */}
           </div>
         </div>
       </section>
