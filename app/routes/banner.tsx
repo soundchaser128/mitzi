@@ -22,6 +22,7 @@ import {json} from "@remix-run/server-runtime"
 import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
 import ImageCropModal from "~/components/ImageCropModal"
+import {Crop} from "react-image-crop"
 
 const aspectRatios = [
   {
@@ -61,7 +62,12 @@ function clamp(n: number, min: number, max: number) {
 
 interface Image {
   url: string
-  position: {x: number; y: number}
+  crop: {
+    x: number
+    y: number
+    width?: number
+    height?: number
+  }
   name: string
   id: string
 }
@@ -115,22 +121,25 @@ const BannerGenerator: React.FC = () => {
   const onUpload = (uploads: File[]) => {
     const images = uploads.map((file) => ({
       url: URL.createObjectURL(file),
-      position: {x: 50, y: 50},
+      crop: {x: 0, y: 0},
       name: file.name,
       id: nanoid(),
     }))
     setFiles(files.concat(images))
   }
 
-  const onFilePositionChange = (
-    index: number,
-    axis: "x" | "y",
-    value: number
-  ) => {
-    const newFiles = produce(files, (draft) => {
-      draft[index].position[axis] = value
-    })
-    setFiles(newFiles)
+  const onChangeImageCrop = (id: string, crop: Crop) => {
+    setFiles((files) =>
+      produce(files, (draft) => {
+        const file = draft.find((f) => f.id === id)
+        file!.crop = {
+          x: crop.x,
+          y: crop.y,
+          width: crop.width,
+          height: crop.height,
+        }
+      })
+    )
   }
 
   const onChange = (key: keyof Settings, value: any) => {
@@ -156,7 +165,7 @@ const BannerGenerator: React.FC = () => {
     )
   }
 
-  const onEditCrop = (image: Image, idx: number) => {
+  const onEditCrop = (image: Image) => {
     setModalOpen(image)
   }
 
@@ -169,10 +178,13 @@ const BannerGenerator: React.FC = () => {
   return (
     <main className="relative flex min-h-screen bg-white">
       <ImageCropModal
+        onSave={onChangeImageCrop}
         isOpen={Boolean(modalOpen)}
         closeModal={() => setModalOpen(null)}
         imageBlobUrl={modalOpen?.url}
+        imageId={modalOpen?.id}
         title="Edit image"
+        aspectRatio={imageRatio.valueOf()}
       />
 
       <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
@@ -280,40 +292,13 @@ const BannerGenerator: React.FC = () => {
                   <p>
                     File <strong>{file.name}</strong>
                   </p>
-                  <div className="flex flex-col">
-                    <label>Position left/right</label>
-                    <input
-                      min="0"
-                      max="100"
-                      title="Adjust image X position"
-                      type="range"
-                      value={file.position.x}
-                      onChange={(event) =>
-                        onFilePositionChange(
-                          idx,
-                          "x",
-                          event.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label>Position up/down</label>
-                    <input
-                      min="0"
-                      max="100"
-                      title="Adjist image Y position"
-                      type="range"
-                      value={file.position.y}
-                      onChange={(event) =>
-                        onFilePositionChange(
-                          idx,
-                          "y",
-                          event.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </div>
+                  <button
+                    type="button"
+                    className={styles.button.base}
+                    onClick={() => onEditCrop(file)}
+                  >
+                    Edit image crop
+                  </button>
                   <div className="flex justify-between">
                     <div>
                       <button
@@ -370,7 +355,6 @@ const BannerGenerator: React.FC = () => {
             )}
             {files.map((image, idx) => (
               <img
-                onClick={() => onEditCrop(image, idx)}
                 className={clsx(
                   "object-cover",
                   settings.darken && "brightness-50",
@@ -381,18 +365,18 @@ const BannerGenerator: React.FC = () => {
                 alt="user-uploaded data"
                 style={{
                   aspectRatio,
-                  objectPosition: `${image.position.x}% ${image.position.y}%`,
+                  objectPosition: `${image.crop.x}px ${image.crop.y}px`,
                 }}
               />
             ))}
-            {/* {files.length > 0 && (
+            {files.length > 0 && (
               <h1
                 className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold"
                 style={{color: settings.fontColor}}
               >
                 {settings.text}
               </h1>
-            )} */}
+            )}
           </div>
         </div>
       </section>
