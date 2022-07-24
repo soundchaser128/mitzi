@@ -31,6 +31,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
 
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = "high"
+    // ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
 
     ctx.fillStyle = "white"
     ctx.fillRect(0, 0, width, height)
@@ -49,11 +50,19 @@ const CanvasBanner: React.FC<BannerProps> = ({
         let sourceWidth = img.width
         let sourceHeight = img.height
 
-        if (img.width > img.height) {
-          sourceWidth = img.height * imageAspectRatio.valueOf()
+        if (image.crop) {
+          sourceWidth = image.crop.width
+          sourceHeight = image.crop.height
         } else {
-          sourceHeight = img.width * imageAspectRatio.inverse().valueOf()
+          if (img.width > img.height) {
+            sourceWidth = img.height * imageAspectRatio.valueOf()
+          } else {
+            sourceHeight = img.width * imageAspectRatio.inverse().valueOf()
+          }
         }
+
+        // sourceWidth *= devicePixelRatio
+        // sourceHeight *= devicePixelRatio
 
         ctx.drawImage(
           img,

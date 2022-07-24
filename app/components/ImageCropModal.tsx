@@ -49,15 +49,25 @@ const ImageCropModal: React.FC<Props> = ({
   ...props
 }) => {
   const [crop, setCrop] = useState<Crop>()
+  const [scale, setScale] = useState<[number, number]>()
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const {width, height} = e.currentTarget
+    const {width, height, naturalHeight, naturalWidth} = e.currentTarget
     setCrop(centerAspectCrop(width, height, aspectRatio))
+    setScale([naturalWidth / width, naturalHeight / height])
   }
 
   const onSave = () => {
-    props.onSave(imageId!, crop!)
-    props.closeModal()
+    if (crop && imageId && scale) {
+      const [scaleX, scaleY] = scale
+      const scaledCrop = {
+        ...crop,
+        width: crop.width * scaleX,
+        height: crop.height * scaleY,
+      }
+      props.onSave(imageId, scaledCrop)
+      props.closeModal()
+    }
   }
 
   return (

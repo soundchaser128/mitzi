@@ -110,7 +110,6 @@ const BannerGenerator: React.FC = () => {
   const onUpload = (uploads: File[]) => {
     const images: Image[] = uploads.map((file) => ({
       url: URL.createObjectURL(file),
-      crop: {x: 0, y: 0, width: 1000, height: 1000, unit: "px"},
       name: file.name,
       id: nanoid(),
     }))
