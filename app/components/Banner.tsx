@@ -4,7 +4,6 @@ import type {Image, Settings} from "~/routes/banner"
 import Fraction from "fraction.js"
 import ImageCropModal from "./ImageCropModal"
 import type {Crop} from "react-image-crop"
-import CanvasPreview from "./canvasPreview"
 
 export interface BannerProps {
   files: Image[]
@@ -67,21 +66,19 @@ const Banner: React.FC<BannerProps> = ({
         </div>
       )}
       {files.map((image, idx) => (
-        // <img
-        //   className={clsx(
-        //     "object-cover",
-        //     settings.darken && "brightness-50",
-        //     settings.lowerContrast && "contrast-50"
-        //   )}
-        //   src={image.url}
-        //   key={idx}
-        //   alt="user-uploaded data"
-        //   style={{
-        //     aspectRatio: `${imageRatio.n} / ${imageRatio.d}`,
-        //     objectPosition: `${image.crop.x}px ${image.crop.y}px`,
-        //   }}
-        // />
-        <CanvasPreview key={idx} crop={image?.crop} src={image.url} />
+        <img
+          className={clsx(
+            "object-cover",
+            settings.darken && "brightness-50",
+            settings.lowerContrast && "contrast-50"
+          )}
+          src={image.url}
+          key={idx}
+          alt="user-uploaded data"
+          style={{
+            aspectRatio: `${imageRatio.n} / ${imageRatio.d}`,
+          }}
+        />
       ))}
       {files.length > 0 && (
         <h1
