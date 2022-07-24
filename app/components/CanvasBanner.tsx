@@ -1,3 +1,4 @@
+import Fraction from "fraction.js"
 import {useEffect, useMemo, useRef} from "react"
 import type {BannerProps} from "./Banner"
 
@@ -26,7 +27,11 @@ const CanvasBanner: React.FC<BannerProps> = ({
     ctx.fillRect(0, 0, width, height)
 
     const imageWidth = Math.floor(width / files.length)
-    const imageHeight = height
+    // const imageHeight = height
+
+    const imageAspectRatio = new Fraction(settings.aspectRatio).div(
+      files.length === 0 ? 1 : files.length
+    )
 
     files.forEach((image, idx) => {
       const xPosition = idx * imageWidth
@@ -35,19 +40,27 @@ const CanvasBanner: React.FC<BannerProps> = ({
       img.src = image.url
 
       img.onload = (e) => {
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height)
+        const sourceX = 0
+        const sourceY = 0
+        const sourceWidth = imageAspectRatio
+        const sourceHeight = img.height
 
-        // ctx.drawImage(
-        //   img,
-        //   image.crop?.x || 0,
-        //   image.crop?.y || 0,
-        //   image.crop?.width || img.width,
-        //   image.crop?.height || img.height,
-        //   xPosition,
-        //   0,
-        //   imageWidth,
-        //   imageHeight
-        // )
+        console.log({sourceWidth, sourceHeight})
+
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = "high"
+
+        ctx.drawImage(
+          img,
+          sourceX,
+          sourceY,
+          sourceWidth,
+          sourceHeight,
+          xPosition,
+          0,
+          imageWidth,
+          height
+        )
       }
 
       // document.removeChild(img)
