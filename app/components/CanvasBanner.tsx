@@ -131,8 +131,10 @@ const CanvasBanner: React.FC<BannerProps> = ({
     files.length === 0 ? 1 : files.length
   )
   const urls = useMemo(() => files.map((f) => f.url), [files])
-  const {loading, font} = useCustomFont(settings.font, "font-face")
+  
+  const {loading, font} = useCustomFont(settings.font, "css")
   logger("font loading=%s, font=%O", loading, font)
+
   const images = useLoadImages(urls)
   logger("loaded images %O", images)
 

@@ -19,15 +19,14 @@ export async function loadFont(
     style.innerHTML = css
     document.head.appendChild(style)
     logger("appended style to head element")
-  } else if (mode === "font-face") {
-    Object.values(font.files).forEach(async (url) => {
-      const fontFace = new FontFace(font.family, `url(${url})`)
-      await fontFace.load()
-      logger("loaded font %s", fontFace.family)
-      document.fonts.add(fontFace)
-    })
 
     await document.fonts.ready
-    logger("fonts ready")
+
+  } else if (mode === "font-face") {
+    await Promise.all(Object.values(font.files).map(async url => {
+      const fontFace = new FontFace(font.family, `url(${url})`)
+      await fontFace.load()
+      document.fonts.add(fontFace)
+    }))
   }
 }
