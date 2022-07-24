@@ -1,14 +1,12 @@
-import clsx from "clsx"
 import Fraction from "fraction.js"
-import {useEffect, useRef, useState} from "react"
+import {useEffect, useMemo, useRef, useState} from "react"
 import type {Crop} from "react-image-crop"
 import type {Image, Settings} from "~/routes/banner"
 import ImageCropModal from "./ImageCropModal"
-import debug from "debug"
-import useDebouncedEffect from "~/hooks/useDebouncedEffect"
+import {useCustomFont} from "~/helpers/hooks"
+import createLogger from "~/helpers/log"
 
-const logger = debug("CanvasBanner")
-
+const logger = createLogger("CanvasBanner")
 export interface BannerProps {
   files: Image[]
   settings: Settings
@@ -41,7 +39,7 @@ const useLoadImages = (urls: string[]) => {
     })
 
     return () => images?.forEach((e) => e.remove())
-  }, [JSON.stringify(urls)])
+  }, [urls])
 
   return images
 }
@@ -132,63 +130,56 @@ const CanvasBanner: React.FC<BannerProps> = ({
   const imageAspectRatio = new Fraction(settings.aspectRatio).div(
     files.length === 0 ? 1 : files.length
   )
-  const [rendering, setRendering] = useState(false)
-  const images = useLoadImages(files.map((f) => f.url))
+  const urls = useMemo(() => files.map((f) => f.url), [files])
+  const {loading, font} = useCustomFont(settings.font, "font-face")
+  logger("font loading=%s, font=%O", loading, font)
+  const images = useLoadImages(urls)
   logger("loaded images %O", images)
 
-  useDebouncedEffect(
-    () => {
-      logger("rendering canvas content")
-      if (!canvasRef.current || !canvasSize) {
-        return
-      }
+  useEffect(() => {
+    logger("rendering canvas content")
+    if (!canvasRef.current || !canvasSize) {
+      return
+    }
 
-      const ctx = canvasRef.current.getContext("2d")
-      if (!ctx) {
-        return
-      }
+    const ctx = canvasRef.current.getContext("2d")
+    if (!ctx) {
+      return
+    }
+    const [width, height] = canvasSize
 
-      if (!images || images.length === 0) {
-        return
-      }
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, width, height)
 
-      setRendering(true)
-      const [width, height] = canvasSize
+    if (!images || images.length === 0) {
+      return
+    }
 
-      // ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+    const inner = async () => {
+      await Promise.all(
+        renderImages(ctx, settings.aspectRatio, width, height, files, images)
+      )
 
-      ctx.fillStyle = "white"
-      ctx.fillRect(0, 0, width, height)
+      logger("rendered all images, rendering text")
+      ctx.font = `8rem ${font?.family || "sans-serif"}`
+      logger("rendering with font '%s'", ctx.font)
 
-      const inner = async () => {
-        await Promise.all(
-          renderImages(ctx, settings.aspectRatio, width, height, files, images)
-        )
+      ctx.textAlign = "center"
+      ctx.fillStyle = settings.fontColor
+      ctx.fillText(settings.text, width / 2, height / 2)
+      logger("rendered text")
+    }
 
-        logger("rendered all images, rendering text")
-        ctx.font = `8rem ${settings.font?.family || "sans-serif"}`
-        logger("rendering with font '%s'", ctx.font)
-
-        ctx.textAlign = "center"
-        ctx.fillStyle = settings.fontColor
-        ctx.fillText(settings.text, width / 2, height / 2)
-        logger("rendered text")
-
-        setRendering(false)
-      }
-
-      inner().then().catch(console.error)
-    },
-    60,
-    [
-      files,
-      settings.aspectRatio,
-      settings.text,
-      settings.fontColor,
-      canvasSize,
-      settings.font,
-    ]
-  )
+    inner().then().catch(console.error)
+  }, [
+    canvasSize,
+    files,
+    font?.family,
+    images,
+    settings.aspectRatio,
+    settings.fontColor,
+    settings.text,
+  ])
 
   return (
     <>
@@ -205,7 +196,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
       <canvas
         ref={canvasRef}
         id="banner-frame"
-        className={clsx("w-full", rendering && "hidden")}
+        className="w-full"
         style={{aspectRatio: settings.aspectRatio}}
       />
     </>

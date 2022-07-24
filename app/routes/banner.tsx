@@ -1,7 +1,6 @@
-import {useRef, useState} from "react"
+import {useState} from "react"
 import FileDrop from "~/components/FileDrop"
 import styles from "../styles/styles"
-import type Fraction from "fraction.js"
 import clsx from "clsx"
 import {nanoid} from "nanoid"
 import produce from "immer"
@@ -104,7 +103,6 @@ const BannerGenerator: React.FC = () => {
     containerId: "banner-frame",
     fileName: `${bannerName}-banner-${settings.text}.png`,
   })
-  useCustomFont(settings.font)
   const [modalImage, setModalImage] = useState<Image | null>(null)
 
   const onUpload = (uploads: File[]) => {
@@ -261,22 +259,25 @@ const BannerGenerator: React.FC = () => {
           <div className="mt-4">
             <div className="flex flex-col gap-4 ">
               {files.map((file, idx) => (
-                <div key={file.id}>
-                  <p>
-                    File <strong>{file.name}</strong>
-                  </p>
-                  <button
-                    type="button"
-                    className="rounded-lg bg-purple-400 px-2 py-1 text-white transition hover:bg-purple-500"
-                    onClick={() => onEditCrop(file)}
-                  >
-                    <FontAwesomeIcon icon={faEdit} className="mr-1" />
-                    <strong>Edit image crop</strong>
-                  </button>
+                <div className="flex flex-col" key={file.id}>
                   <div className="flex justify-between">
-                    <div>
+                    <span>
+                      File <strong>{file.name}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      className="rounded-lg bg-purple-400 px-2 py-1 text-white transition hover:bg-purple-500"
+                      onClick={() => onEditCrop(file)}
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                      <strong>Edit</strong>
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <div className="flex gap-1">
                       <button
-                        className="p-1 hover:text-gray-800"
+                        className="inline-flex items-center justify-center rounded-full border border-black p-1 hover:border-gray-800 hover:text-gray-800"
                         type="button"
                         title="Shift up"
                         onClick={() => onShiftImage(idx, "up")}
@@ -285,7 +286,7 @@ const BannerGenerator: React.FC = () => {
                       </button>
 
                       <button
-                        className="p-1 hover:text-gray-800"
+                        className="inline-flex items-center justify-center rounded-full border border-black p-1 hover:border-gray-800 hover:text-gray-800"
                         type="button"
                         title="Shift down"
                         onClick={() => onShiftImage(idx, "down")}
