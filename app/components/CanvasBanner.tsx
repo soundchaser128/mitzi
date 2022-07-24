@@ -1,7 +1,22 @@
+import {faSpinner} from "@fortawesome/free-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import clsx from "clsx"
 import Fraction from "fraction.js"
-import {useEffect, useRef} from "react"
+import {useEffect, useRef, useState} from "react"
 import type {BannerProps} from "./Banner"
 import ImageCropModal from "./ImageCropModal"
+
+async function handleImageLoad(
+  img: HTMLImageElement,
+  func: () => void
+): Promise<void> {
+  return new Promise((resolve) => {
+    img.onload = () => {
+      func()
+      resolve()
+    }
+  })
+}
 
 const CanvasBanner: React.FC<BannerProps> = ({
   files,
@@ -14,6 +29,8 @@ const CanvasBanner: React.FC<BannerProps> = ({
   const imageAspectRatio = new Fraction(settings.aspectRatio).div(
     files.length === 0 ? 1 : files.length
   )
+  const [rendering, setRendering] = useState(false)
+
   useEffect(() => {
     if (!canvasRef.current) {
       return
@@ -23,6 +40,8 @@ const CanvasBanner: React.FC<BannerProps> = ({
     if (!ctx) {
       return
     }
+
+    setRendering(true)
 
     const width = canvasRef.current.clientWidth
     const height = canvasRef.current.clientHeight
@@ -38,13 +57,13 @@ const CanvasBanner: React.FC<BannerProps> = ({
 
     const imageWidth = Math.floor(width / files.length)
 
-    files.forEach((image, idx) => {
+    const promises = files.map(async (image, idx) => {
       const xPosition = idx * imageWidth
 
       const img = document.createElement("img")
       img.src = image.url
 
-      img.onload = (e) => {
+      return handleImageLoad(img, () => {
         const sourceX = image.crop?.x || 0
         const sourceY = image.crop?.y || 0
         let sourceWidth = img.width
@@ -75,10 +94,16 @@ const CanvasBanner: React.FC<BannerProps> = ({
           imageWidth,
           height
         )
-      }
-      img.remove()
+
+        img.remove()
+      })
     })
-  }, [canvasRef, files, settings.aspectRatio, imageAspectRatio])
+
+    Promise.all(promises)
+      .then()
+      .catch(console.error)
+      .finally(() => setRendering(false))
+  }, [files, settings.aspectRatio])
 
   return (
     <>
@@ -88,13 +113,25 @@ const CanvasBanner: React.FC<BannerProps> = ({
         closeModal={() => setModalImage(null)}
         imageBlobUrl={modalImage?.url}
         imageId={modalImage?.id}
+        initialCrop={modalImage?.crop}
         title="Edit image"
         aspectRatio={imageAspectRatio.valueOf()}
       />
+      {rendering && (
+        <div
+          className="flex w-full items-center justify-center bg-white"
+          style={{aspectRatio: settings.aspectRatio}}
+        >
+          <FontAwesomeIcon
+            icon={faSpinner}
+            className="h-16 w-16 animate-spin"
+          />
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         id="banner-frame"
-        className="w-full"
+        className={clsx("w-full", rendering && "hidden")}
         style={{aspectRatio: settings.aspectRatio}}
       />
     </>
