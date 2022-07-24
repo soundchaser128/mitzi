@@ -1,5 +1,3 @@
-import {faSpinner} from "@fortawesome/free-solid-svg-icons"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
 import Fraction from "fraction.js"
 import {useEffect, useRef, useState} from "react"
@@ -19,16 +17,33 @@ export interface BannerProps {
   setModalImage: (image: Image | null) => void
 }
 
-async function handleImageLoad(
-  img: HTMLImageElement,
-  func: () => void
-): Promise<void> {
-  return new Promise((resolve) => {
-    img.onload = () => {
-      func()
+const loadImage = async (url: string) => {
+  const element = document.createElement("img")
+  element.src = url
+  await new Promise<void>((resolve) => {
+    element.addEventListener("load", () => {
       resolve()
-    }
+    })
   })
+  return element
+}
+
+const useLoadImages = (urls: string[]) => {
+  const [images, setImages] = useState<HTMLImageElement[]>()
+
+  useEffect(() => {
+    if (!urls || urls.length === 0) {
+      return
+    }
+
+    Promise.all(urls.map((url) => loadImage(url))).then((results) => {
+      setImages(results)
+    })
+
+    return () => images?.forEach((e) => e.remove())
+  }, [JSON.stringify(urls)])
+
+  return images
 }
 
 function renderImages(
@@ -36,7 +51,8 @@ function renderImages(
   aspectRatio: string,
   width: number,
   height: number,
-  files: Image[]
+  files: Image[],
+  imageElements: HTMLImageElement[]
 ): Promise<void>[] {
   const imageWidth = Math.floor(width / files.length)
   const imageAspectRatio = new Fraction(aspectRatio).div(
@@ -45,39 +61,34 @@ function renderImages(
   return files.map(async (image, idx) => {
     const xPosition = idx * imageWidth
 
-    const img = document.createElement("img")
-    img.src = image.url
+    const img = imageElements[idx]
+    const sourceX = image.crop?.x || 0
+    const sourceY = image.crop?.y || 0
+    let sourceWidth = img.width
+    let sourceHeight = img.height
 
-    return handleImageLoad(img, () => {
-      const sourceX = image.crop?.x || 0
-      const sourceY = image.crop?.y || 0
-      let sourceWidth = img.width
-      let sourceHeight = img.height
-
-      if (image.crop) {
-        sourceWidth = image.crop.width
-        sourceHeight = image.crop.height
+    if (image.crop) {
+      sourceWidth = image.crop.width
+      sourceHeight = image.crop.height
+    } else {
+      if (img.width > img.height) {
+        sourceWidth = img.height * imageAspectRatio.valueOf()
       } else {
-        if (img.width > img.height) {
-          sourceWidth = img.height * imageAspectRatio.valueOf()
-        } else {
-          sourceHeight = img.width * imageAspectRatio.inverse().valueOf()
-        }
+        sourceHeight = img.width * imageAspectRatio.inverse().valueOf()
       }
+    }
 
-      ctx.drawImage(
-        img,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        xPosition,
-        0,
-        imageWidth,
-        height
-      )
-      img.remove()
-    })
+    ctx.drawImage(
+      img,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      xPosition,
+      0,
+      imageWidth,
+      height
+    )
   })
 }
 
@@ -122,8 +133,8 @@ const CanvasBanner: React.FC<BannerProps> = ({
     files.length === 0 ? 1 : files.length
   )
   const [rendering, setRendering] = useState(false)
-
-  // useEffect(() => {}, [])
+  const images = useLoadImages(files.map((f) => f.url))
+  logger("loaded images %O", images)
 
   useDebouncedEffect(
     () => {
@@ -137,6 +148,10 @@ const CanvasBanner: React.FC<BannerProps> = ({
         return
       }
 
+      if (!images || images.length === 0) {
+        return
+      }
+
       setRendering(true)
       const [width, height] = canvasSize
 
@@ -147,7 +162,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
 
       const inner = async () => {
         await Promise.all(
-          renderImages(ctx, settings.aspectRatio, width, height, files)
+          renderImages(ctx, settings.aspectRatio, width, height, files, images)
         )
 
         logger("rendered all images, rendering text")
@@ -164,7 +179,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
 
       inner().then().catch(console.error)
     },
-    500,
+    60,
     [
       files,
       settings.aspectRatio,
@@ -187,17 +202,6 @@ const CanvasBanner: React.FC<BannerProps> = ({
         title="Edit image"
         aspectRatio={imageAspectRatio.valueOf()}
       />
-      {rendering && (
-        <div
-          className="flex w-full items-center justify-center bg-white"
-          style={{aspectRatio: settings.aspectRatio}}
-        >
-          <FontAwesomeIcon
-            icon={faSpinner}
-            className="h-16 w-16 animate-spin"
-          />
-        </div>
-      )}
       <canvas
         ref={canvasRef}
         id="banner-frame"
