@@ -98,14 +98,7 @@ const ImageCropModal: React.FC<Props> = ({
           />
         </ReactCrop>
 
-        <button
-          onClick={onSave}
-          className={clsx(
-            styles.button.base,
-            styles.button.green,
-            "mt-4 self-end"
-          )}
-        >
+        <button onClick={onSave} className={clsx("btn", "mt-4 self-end")}>
           <FontAwesomeIcon icon={faSave} /> Save
         </button>
       </div>

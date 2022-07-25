@@ -238,11 +238,7 @@ export default function Index() {
 
             <button
               type="button"
-              className={clsx(
-                styles.button.base,
-                styles.button.green,
-                "self-end"
-              )}
+              className={clsx("btn", "self-end")}
               onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon icon={faAdd} /> Add tier
@@ -277,7 +273,7 @@ export default function Index() {
               />
               <button
                 type="button"
-                className={clsx(styles.button.base, styles.button.green)}
+                className={clsx("btn")}
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
@@ -350,7 +346,7 @@ export default function Index() {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
+          className={clsx("btn", "btn", "mx-2 mt-4")}
           disabled={rendering}
           type="button"
         >
@@ -369,11 +365,7 @@ export default function Index() {
         <button
           id="reset-button"
           onClick={onResetData}
-          className={clsx(
-            styles.button.base,
-            styles.button.red,
-            "mx-2 mt-2 w-auto self-end"
-          )}
+          className={clsx("btn", "mx-2 mt-2 w-auto self-end")}
         >
           <FontAwesomeIcon icon={faTrash} /> Reset
         </button>

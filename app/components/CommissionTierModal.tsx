@@ -90,13 +90,7 @@ const CommissionTierModal: React.FC<{
               placeholder="Each line is a separate bullet point."
             />
           </div>
-          <button
-            className={clsx(
-              styles.button.base,
-              styles.button.green,
-              "self-end"
-            )}
-          >
+          <button className={clsx("btn", "self-end")}>
             <FontAwesomeIcon icon={faCheck} /> Save
           </button>
         </form>

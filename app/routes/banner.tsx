@@ -164,7 +164,7 @@ const BannerGenerator: React.FC = () => {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
+          className={clsx("btn", "mx-2 mt-2")}
           disabled={rendering}
           type="button"
         >
@@ -312,7 +312,7 @@ const BannerGenerator: React.FC = () => {
           </div>
         )}
       </section>
-      <section className="grow bg-neutral-500">
+      <section className="bg-neutral-500 grow">
         <div className="flex min-h-screen w-full items-center justify-center">
           <CanvasBanner
             files={files}
