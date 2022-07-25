@@ -67,6 +67,7 @@ export interface Settings {
   font?: FontFamiliy
   fontColor: string
   aspectRatio: string
+  textOutline: boolean
 }
 
 const defaultSettings: Settings = {
@@ -75,6 +76,7 @@ const defaultSettings: Settings = {
   text: "Your Name",
   fontColor: "#ffffff",
   aspectRatio: aspectRatios[0].value,
+  textOutline: false,
 }
 
 export const loader: LoaderFunction = async () => {

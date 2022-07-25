@@ -131,7 +131,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
     files.length === 0 ? 1 : files.length
   )
   const urls = useMemo(() => files.map((f) => f.url), [files])
-  
+
   const {loading, font} = useCustomFont(settings.font, "css")
   logger("font loading=%s, font=%O", loading, font)
 
@@ -169,6 +169,12 @@ const CanvasBanner: React.FC<BannerProps> = ({
       ctx.textAlign = "center"
       ctx.fillStyle = settings.fontColor
       ctx.fillText(settings.text, width / 2, height / 2)
+      if (settings.textOutline) {
+        ctx.strokeStyle = "black"
+        ctx.lineWidth = 4
+        ctx.strokeText(settings.text, width / 2, height / 2)
+      }
+
       logger("rendered text")
     }
 
@@ -199,7 +205,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
         ref={canvasRef}
         id="banner-frame"
         className="w-full"
-        style={{aspectRatio: settings.aspectRatio}}
+        style={{aspectRatio: settings.aspectRatio, fontFamily: font?.family}}
       />
     </>
   )
