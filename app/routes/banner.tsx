@@ -160,12 +160,12 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-slate-100 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx("btn", "mx-2 mt-2")}
-          disabled={rendering}
+          className="btn btn-success mx-2 mt-2"
+          disabled={rendering || files.length === 0}
           type="button"
         >
           {rendering && (
@@ -176,7 +176,7 @@ const BannerGenerator: React.FC = () => {
           )}
           {!rendering && (
             <>
-              <FontAwesomeIcon icon={faSave} /> Save As Image
+              <FontAwesomeIcon icon={faSave} className="mr-2" /> Save As Image
             </>
           )}
         </button>
