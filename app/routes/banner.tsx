@@ -19,7 +19,6 @@ import type {FontFamiliy} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
-import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
 import type {Crop, PixelCrop} from "react-image-crop"
 import CanvasBanner from "~/components/CanvasBanner"
@@ -160,7 +159,7 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-slate-100 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-primary p-2 shadow-xl text-white">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -268,7 +267,7 @@ const BannerGenerator: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="rounded-lg bg-purple-400 px-2 py-1 text-white transition hover:bg-purple-500"
+                      className="btn btn-secondary"
                       onClick={() => onEditCrop(file)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="mr-1" />
@@ -312,8 +311,8 @@ const BannerGenerator: React.FC = () => {
           </div>
         )}
       </section>
-      <section className="bg-neutral-500 grow">
-        <div className="flex min-h-screen w-full items-center justify-center">
+      <section className="grow">
+        <div className="flex min-h-screen w-full items-center justify-center bg-neutral">
           <CanvasBanner
             files={files}
             settings={settings}
