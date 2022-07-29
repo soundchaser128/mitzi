@@ -159,7 +159,7 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-primary p-2 shadow-xl text-white">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-base-200 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -267,7 +267,7 @@ const BannerGenerator: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="btn btn-secondary"
+                      className="btn btn-secondary btn-sm"
                       onClick={() => onEditCrop(file)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="mr-1" />

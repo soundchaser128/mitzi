@@ -6,7 +6,7 @@ import {Link} from "@remix-run/react"
 const Index: React.FC = () => {
   return (
     <main className="flex w-full justify-center">
-      <section className="mt-8 flex flex-col rounded-xl bg-blue-100 p-4 shadow-xl">
+      <section className="mt-8 flex flex-col rounded-xl bg-base-200 p-4 shadow-xl">
         <h1 className="mb-2 text-center text-3xl font-bold">Mitzi</h1>
         <img
           src="/android-chrome-192x192.png"
@@ -18,17 +18,11 @@ const Index: React.FC = () => {
           right inside your browser.
         </p>
         <div className="flex justify-around">
-          <Link
-            className="flex items-baseline rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 px-3 py-2 text-white hover:from-blue-600 hover:to-blue-700"
-            to="/commission-sheet"
-          >
+          <Link className="btn btn-primary" to="/commission-sheet">
             <FontAwesomeIcon icon={faPaintBrush} className="mr-1" />
             Commission sheet generator
           </Link>
-          <Link
-            className="flex items-baseline rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 px-3 py-2 text-white hover:from-blue-600 hover:to-blue-700"
-            to="/banner"
-          >
+          <Link className="btn  btn-primary" to="/banner">
             <FontAwesomeIcon icon={faTwitter} className="mr-1" />
             Banner generator
           </Link>
