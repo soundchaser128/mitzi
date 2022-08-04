@@ -72,7 +72,7 @@ const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
                   key={value.value}
                   className={({active}) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-sky-600 text-white" : "text-gray-900"
+                      active ? "bg-primary text-white" : "text-gray-900"
                     }`
                   }
                   value={value}
