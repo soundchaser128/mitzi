@@ -267,7 +267,7 @@ const BannerGenerator: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="btn btn-secondary"
+                      className="btn btn-secondary btn-sm"
                       onClick={() => onEditCrop(file)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="mr-1" />
