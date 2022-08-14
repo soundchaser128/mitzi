@@ -1,7 +1,6 @@
-import {useState} from "react"
+import React, {useState} from "react"
 import FileDrop from "~/components/FileDrop"
 import styles from "../styles/styles"
-import clsx from "clsx"
 import {nanoid} from "nanoid"
 import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"
@@ -86,6 +85,14 @@ export const loader: LoaderFunction = async () => {
     console.error(e)
     return json([])
   }
+}
+
+const Label: React.FC<{children: React.ReactNode, htmlFor?: string}> = ({children, htmlFor}) => {
+  return (
+    <label htmlFor={htmlFor} className="label grow">
+      <span className="label-text font-semibold">{children}</span>
+    </label>
+  )
 }
 
 const BannerGenerator: React.FC = () => {
@@ -181,7 +188,7 @@ const BannerGenerator: React.FC = () => {
         </button>
         <form className="mt-4 flex flex-col gap-4 px-2">
           <div className="flex flex-col">
-            <label className={styles.label}>Choose format</label>
+            <Label>Choose format</Label>
             <Dropdown
               placeholder="Choose banner format"
               values={aspectRatios}
@@ -190,7 +197,7 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Your name</label>
+            <Label>Your name</Label>
             <input
               placeholder="Enter your name"
               type="text"
@@ -200,32 +207,32 @@ const BannerGenerator: React.FC = () => {
             />
           </div>
           <div className="flex flex-row justify-between">
-            <label htmlFor="darken-image" className={styles.label}>
+            <Label htmlFor="darken-image">
               Darken images?
-            </label>
+            </Label>
             <input
               id="darken-image"
               type="checkbox"
               checked={settings.darken}
               onChange={(e) => onChange("darken", e.target.checked)}
-              className="h-6 w-6 self-end"
+              className="h-6 w-6 self-center"
             />
           </div>
           <div className="flex flex-row justify-between">
-            <label htmlFor="lower-contrast" className={styles.label}>
+            <Label htmlFor="lower-contrast">
               Lower contrast?
-            </label>
+            </Label>
             <input
               id="lower-contrast"
               type="checkbox"
               checked={settings.lowerContrast}
               onChange={(e) => onChange("lowerContrast", e.target.checked)}
-              className="h-6 w-6 self-end"
+              className="h-6 w-6 self-center"
             />
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Select font</label>
+            <Label>Select font</Label>
             <Dropdown
               id="fonts-dropdown"
               values={fontDropdownValues}
@@ -240,7 +247,7 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Select font color</label>
+            <Label>Select font color</Label>
 
             <input
               type="color"
@@ -252,8 +259,8 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Upload images</label>
-            <FileDrop allowMultiple onUpload={onUpload} />
+            <Label>Upload images</Label>
+            <FileDrop button allowMultiple onUpload={onUpload} />
           </div>
         </form>
         {files.length > 0 && (
