@@ -3,7 +3,7 @@ import {useEffect, useMemo, useRef, useState} from "react"
 import type {Crop} from "react-image-crop"
 import type {Image, Settings} from "~/routes/banner"
 import ImageCropModal from "./ImageCropModal"
-import {useCustomFont} from "~/helpers/hooks"
+import {useCustomFont} from "~/hooks/useCustomFont"
 import createLogger from "~/helpers/log"
 
 const logger = createLogger("CanvasBanner")
@@ -132,8 +132,8 @@ const CanvasBanner: React.FC<BannerProps> = ({
   )
   const urls = useMemo(() => files.map((f) => f.url), [files])
 
-  const {loading, font} = useCustomFont(settings.font, "css")
-  logger("font loading=%s, font=%O", loading, font)
+  const {loading, font} = useCustomFont(settings.font)
+  logger("font loading=%s, font=%O", loading)
 
   const images = useLoadImages(urls)
   logger("loaded images %O", images)

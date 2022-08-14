@@ -87,7 +87,10 @@ export const loader: LoaderFunction = async () => {
   }
 }
 
-const Label: React.FC<{children: React.ReactNode, htmlFor?: string}> = ({children, htmlFor}) => {
+export const Label: React.FC<{children: React.ReactNode; htmlFor?: string}> = ({
+  children,
+  htmlFor,
+}) => {
   return (
     <label htmlFor={htmlFor} className="label grow">
       <span className="label-text font-semibold">{children}</span>
@@ -207,9 +210,7 @@ const BannerGenerator: React.FC = () => {
             />
           </div>
           <div className="flex flex-row justify-between">
-            <Label htmlFor="darken-image">
-              Darken images?
-            </Label>
+            <Label htmlFor="darken-image">Darken images?</Label>
             <input
               id="darken-image"
               type="checkbox"
@@ -219,9 +220,7 @@ const BannerGenerator: React.FC = () => {
             />
           </div>
           <div className="flex flex-row justify-between">
-            <Label htmlFor="lower-contrast">
-              Lower contrast?
-            </Label>
+            <Label htmlFor="lower-contrast">Lower contrast?</Label>
             <input
               id="lower-contrast"
               type="checkbox"

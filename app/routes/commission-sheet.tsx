@@ -21,6 +21,7 @@ import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
 import useRenderContent from "~/hooks/useRenderContent"
+import {Label} from "./banner"
 
 const localStorageKey = "savedCommissionData"
 
@@ -173,7 +174,7 @@ export default function Index() {
                   checked={data.currency === "dollar"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label htmlFor="dollar-radio">US Dollar ($)</label>
+                <Label htmlFor="dollar-radio">US Dollar ($)</Label>
               </div>
               <div>
                 <input
@@ -185,7 +186,7 @@ export default function Index() {
                   checked={data.currency === "euro"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label htmlFor="euro-radio">Euro (€)</label>
+                <Label htmlFor="euro-radio">Euro (€)</Label>
               </div>
             </div>
           </div>

@@ -5,7 +5,7 @@ import React from "react"
 import {getBackgroundColor} from "~/helpers/colors"
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import {formatPrice} from "~/helpers/utils"
-import {useCustomFont} from "~/helpers/hooks"
+import {useCustomFont} from "~/hooks/useCustomFont"
 import type {LinkType} from "../SocialLink"
 import SocialLink from "../SocialLink"
 

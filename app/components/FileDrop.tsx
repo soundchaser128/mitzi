@@ -48,13 +48,19 @@ const FileDrop: React.FC<Props> = ({
 
   return (
     <div
-      className={button ? "btn btn-primary btn-lg" : clsx(styles.wrapper, uploaded && "opacity-50")}
+      className={
+        button
+          ? "btn btn-primary btn-lg"
+          : clsx(styles.wrapper, uploaded && "opacity-50")
+      }
       {...getRootProps()}
     >
       <input {...getInputProps()} />
       <FontAwesomeIcon
         icon={uploaded ? faCheck : faUpload}
-        className={button ? "h-8 w-8" : clsx("h-8 w-8", uploaded && "text-green-500")}
+        className={
+          button ? "h-8 w-8" : clsx("h-8 w-8", uploaded && "text-green-500")
+        }
       />
       {children}
     </div>
