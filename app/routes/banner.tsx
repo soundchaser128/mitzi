@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import FileDrop from "~/components/FileDrop"
 import styles from "../styles/styles"
-import {nanoid} from "nanoid"
+
 import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
@@ -120,7 +120,7 @@ const BannerGenerator: React.FC = () => {
     const images: Image[] = uploads.map((file) => ({
       url: URL.createObjectURL(file),
       name: file.name,
-      id: nanoid(),
+      id: Math.random().toString()
     }))
     setFiles(files.concat(images))
   }
