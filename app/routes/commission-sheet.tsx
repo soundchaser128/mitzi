@@ -85,8 +85,6 @@ export default function Index() {
   const {rendering, createScreenshot} = useRenderContent({
     containerId: "preview-frame",
     fileName: `commission-sheet-${data.artistName}.png`,
-    width: 1280,
-    height: 800,
   })
   const fonts = useLoaderData<FontFamiliy[]>()
   const fontDropdownValues = fonts.map((font) => ({
