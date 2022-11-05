@@ -3,10 +3,10 @@ const apiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&so
 
 export interface FontsResponse {
   kind: string
-  items: FontFamiliy[]
+  items: FontFamily[]
 }
 
-export interface FontFamiliy {
+export interface FontFamily {
   kind: string
   family: string
   variants: string[]
