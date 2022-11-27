@@ -50,7 +50,7 @@ const FileDrop: React.FC<Props> = ({
     <div
       className={
         button
-          ? "btn btn-primary btn-lg"
+          ? "btn-primary btn-lg btn"
           : clsx(styles.wrapper, uploaded && "opacity-50")
       }
       {...getRootProps()}

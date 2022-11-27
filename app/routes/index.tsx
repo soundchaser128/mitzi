@@ -18,11 +18,11 @@ const Index: React.FC = () => {
           right inside your browser.
         </p>
         <div className="flex justify-around">
-          <Link className="btn btn-primary" to="/commission-sheet">
+          <Link className="btn-primary btn" to="/commission-sheet">
             <FontAwesomeIcon icon={faPaintBrush} className="mr-1" />
             Commission sheet generator
           </Link>
-          <Link className="btn  btn-primary" to="/banner">
+          <Link className="btn-primary  btn" to="/banner">
             <FontAwesomeIcon icon={faTwitter} className="mr-1" />
             Banner generator
           </Link>

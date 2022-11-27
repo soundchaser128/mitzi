@@ -173,7 +173,7 @@ const BannerGenerator: React.FC = () => {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className="btn btn-success mx-2 mt-2"
+          className="btn-success btn mx-2 mt-2"
           disabled={rendering || files.length === 0}
           type="button"
         >
@@ -273,7 +273,7 @@ const BannerGenerator: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="btn btn-secondary btn-sm"
+                      className="btn-secondary btn-sm btn"
                       onClick={() => onEditCrop(file)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="mr-1" />
