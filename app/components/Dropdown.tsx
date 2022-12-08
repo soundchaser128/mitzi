@@ -7,6 +7,7 @@ import {faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons"
 interface DropdownValue {
   text: string
   value: string
+  className?: string
 }
 
 interface Props {
@@ -73,7 +74,7 @@ const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
                   className={({active}) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                       active ? "bg-primary text-white" : "text-gray-900"
-                    }`
+                    } ${value.className || ""}`
                   }
                   value={value}
                 >

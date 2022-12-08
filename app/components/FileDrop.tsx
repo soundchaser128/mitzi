@@ -6,7 +6,7 @@ import {useDropzone} from "react-dropzone"
 
 const styles = {
   wrapper:
-    "flex w-full items-center justify-center rounded-xl border bg-white p-8 text-center text-lg text-black",
+    "flex w-full items-center justify-center rounded-xl border bg-white p-8 text-center text-lg text-black cursor-pointer",
 }
 interface Props {
   onUpload: (files: File[]) => void

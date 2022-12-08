@@ -2,8 +2,6 @@ import type {CommissionTier} from "~/helpers/types"
 import React, {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCheck} from "@fortawesome/free-solid-svg-icons"
-import clsx from "clsx"
-import {Dialog, Transition} from "@headlessui/react"
 import FileDrop from "~/components/FileDrop"
 import styles from "~/styles/styles"
 import {getNextId} from "~/helpers/utils"
@@ -83,14 +81,14 @@ const CommissionTierModal: React.FC<{
           <div className="flex flex-col">
             <label className="mb-1 block font-medium text-gray-700">Info</label>
             <textarea
-              className="text-sm textarea textarea-bordered"
+              className="textarea-bordered textarea text-sm "
               value={newTier.info.join("\n")}
               onChange={(e) => onChange("info", e.target.value.split("\n"))}
               rows={8}
               placeholder="Each line is a separate bullet point."
             />
           </div>
-          <button className="btn btn-success self-end">
+          <button className="btn-success btn self-end">
             <FontAwesomeIcon className="mr-2" icon={faCheck} /> Save
           </button>
         </form>

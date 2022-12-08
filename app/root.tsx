@@ -14,7 +14,7 @@ import {
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
 import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
-import iconStyles from  "@fortawesome/fontawesome-svg-core/styles.css"
+import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
 import {config} from "@fortawesome/fontawesome-svg-core"
 config.autoAddCss = false /* eslint-disable import/first */
 
@@ -22,7 +22,7 @@ export const links: LinksFunction = () => {
   return [
     {rel: "stylesheet", href: tailwindStylesheetUrl},
     {rel: "stylesheet", href: reactCropStyles},
-    {rel: "stylesheet", href: iconStyles}
+    {rel: "stylesheet", href: iconStyles},
   ]
 }
 

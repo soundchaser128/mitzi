@@ -22,6 +22,8 @@ import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
 import useRenderContent from "~/hooks/useRenderContent"
 import {Label} from "./banner"
+import type {Color} from "~/helpers/colors"
+import {BackgroundColors} from "~/helpers/colors"
 
 const localStorageKey = "savedCommissionData"
 
@@ -31,27 +33,27 @@ const initialState: CommissionSheet = {
   currency: "dollar",
   rules: ["Don't be a jerk", "Nothing illegal"],
   colors: {
-    background: "sky",
-    text: "blue",
+    background: "slate",
+    text: "green",
   },
   tiers: [
     {
       name: "Basic",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["One character", "Simple background"],
       price: 45,
       id: getNextId(),
     },
     {
       name: "Advanced",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["One character", "More elaborate background"],
       price: 55,
       id: getNextId(),
     },
     {
       name: "Premium",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["Two characters", "Custom background scene"],
       price: 65,
       id: getNextId(),
@@ -98,6 +100,11 @@ export default function Index() {
   const onChange = (key: keyof CommissionSheet, value: any) => {
     const newState = {...data, [key]: value}
     setData(newState)
+  }
+
+  const setBackgroundColor = (color: string) => {
+    const colorValue = color as Color
+    setData({...data, colors: {background: colorValue, text: data.colors.text}})
   }
 
   const onRemoveTier = (tier: CommissionTier) => {
@@ -239,7 +246,7 @@ export default function Index() {
 
             <button
               type="button"
-              className="btn self-end btn-success"
+              className="btn-success btn self-end"
               onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
@@ -274,7 +281,7 @@ export default function Index() {
               />
               <button
                 type="button"
-                className="btn btn-success"
+                className="btn-success btn"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
@@ -342,12 +349,27 @@ export default function Index() {
               }
             />
           </div>
+
+          <div className={styles.field}>
+            <h2 className="text-xl font-bold">Select background color</h2>
+            <Dropdown
+              placeholder="Select color"
+              values={Object.entries(BackgroundColors).map(
+                ([name, className]) => ({
+                  text: name,
+                  value: name,
+                  className: className,
+                })
+              )}
+              onChange={(color) => setBackgroundColor(color.value)}
+            />
+          </div>
         </form>
 
         <button
           id="download-button"
           onClick={createScreenshot}
-          className="btn btn-primary mx-2 mt-4"
+          className="btn-primary btn mx-2 mt-4"
           disabled={rendering}
           type="button"
         >
@@ -366,7 +388,7 @@ export default function Index() {
         <button
           id="reset-button"
           onClick={onResetData}
-          className="btn btn-error mx-2 mt-2 w-auto self-end"
+          className="btn-error btn mx-2 mt-2 w-auto self-end"
         >
           <FontAwesomeIcon className="mr-2" icon={faTrash} /> Reset
         </button>

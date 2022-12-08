@@ -4,7 +4,7 @@ import type {FontFamily} from "./fonts.server"
 export interface CommissionTier {
   name: string
   price: number
-  image: string
+  image: string | null
   info: string[]
   id: string
 }
