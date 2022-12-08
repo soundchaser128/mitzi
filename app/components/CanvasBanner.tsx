@@ -184,8 +184,11 @@ const CanvasBanner: React.FC<BannerProps> = ({
     files,
     font?.family,
     images,
-    settings,
-    loading,
+    settings.aspectRatio,
+    settings.fontColor,
+    settings.text,
+    settings.textOutline,
+    canvasRef,
   ])
 
   return (

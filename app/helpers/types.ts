@@ -1,5 +1,5 @@
 import type {Color} from "./colors"
-import type {FontFamiliy} from "./fonts.server"
+import type {FontFamily} from "./fonts.server"
 
 export interface CommissionTier {
   name: string
@@ -23,7 +23,7 @@ export type CommissionSheet = {
     website?: string
   }
   currency: "dollar" | "euro"
-  font?: FontFamiliy
+  font?: FontFamily
   colors: {
     background: Color
     text: Color

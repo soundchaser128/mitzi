@@ -15,7 +15,7 @@ import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import Dropdown from "~/components/Dropdown"
 import {useLoaderData} from "@remix-run/react"
-import type {FontFamiliy} from "~/helpers/fonts.server"
+import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
@@ -89,7 +89,7 @@ export default function Index() {
     width: 1280,
     height: 800,
   })
-  const fonts = useLoaderData<FontFamiliy[]>()
+  const fonts = useLoaderData<FontFamily[]>()
   const fontDropdownValues = fonts.map((font) => ({
     text: font.family,
     value: font.family,

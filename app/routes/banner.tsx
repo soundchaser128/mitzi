@@ -14,7 +14,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import {useLoaderData} from "@remix-run/react"
-import type {FontFamiliy} from "~/helpers/fonts.server"
+import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
@@ -62,7 +62,7 @@ export interface Settings {
   darken: boolean
   lowerContrast: boolean
   text: string
-  font?: FontFamiliy
+  font?: FontFamily
   fontColor: string
   aspectRatio: string
   textOutline: boolean
@@ -99,7 +99,7 @@ export const Label: React.FC<{children: React.ReactNode; htmlFor?: string}> = ({
 }
 
 const BannerGenerator: React.FC = () => {
-  const fonts = useLoaderData<FontFamiliy[]>()
+  const fonts = useLoaderData<FontFamily[]>()
   const fontDropdownValues = fonts.map((font) => ({
     text: font.family,
     value: font.family,
@@ -173,7 +173,7 @@ const BannerGenerator: React.FC = () => {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className="btn btn-success mx-2 mt-2"
+          className="btn-success btn mx-2 mt-2"
           disabled={rendering || files.length === 0}
           type="button"
         >
@@ -273,7 +273,7 @@ const BannerGenerator: React.FC = () => {
                     </span>
                     <button
                       type="button"
-                      className="btn btn-secondary btn-sm"
+                      className="btn-secondary btn-sm btn"
                       onClick={() => onEditCrop(file)}
                     >
                       <FontAwesomeIcon icon={faEdit} className="mr-1" />
