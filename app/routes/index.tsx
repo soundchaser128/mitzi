@@ -2,7 +2,7 @@ import {faTwitter} from "@fortawesome/free-brands-svg-icons"
 import {faPaintBrush} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {Link} from "@remix-run/react"
-import {MetaFunction} from "@remix-run/server-runtime"
+import type {MetaFunction} from "@remix-run/server-runtime"
 
 export const meta: MetaFunction = () => {
   return {

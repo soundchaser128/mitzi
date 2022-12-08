@@ -83,15 +83,15 @@ const CommissionTierModal: React.FC<{
           <div className="flex flex-col">
             <label className="mb-1 block font-medium text-gray-700">Info</label>
             <textarea
-              className="text-sm"
+              className="text-sm textarea textarea-bordered"
               value={newTier.info.join("\n")}
               onChange={(e) => onChange("info", e.target.value.split("\n"))}
               rows={8}
               placeholder="Each line is a separate bullet point."
             />
           </div>
-          <button className={clsx("btn", "self-end")}>
-            <FontAwesomeIcon icon={faCheck} /> Save
+          <button className="btn btn-success self-end">
+            <FontAwesomeIcon className="mr-2" icon={faCheck} /> Save
           </button>
         </form>
       </div>

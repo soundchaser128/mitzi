@@ -149,7 +149,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-indigo-50 p-2 shadow-xl">
+      <section className="z-10 flex flex-col bg-base-200 p-2 shadow-xl">
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -162,7 +162,7 @@ export default function Index() {
 
         <form className="flex flex-col gap-4">
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Select currency</h2>
+            <h2 className={styles.formHeader}>Select currency</h2>
             <div className="flex gap-4">
               <div>
                 <input
@@ -203,7 +203,7 @@ export default function Index() {
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Commission tiers</h2>
+            <h2 className={styles.formHeader}>Commission tiers</h2>
             <div className="flex flex-col">
               {data.tiers.map((tier) => (
                 <div
@@ -239,15 +239,15 @@ export default function Index() {
 
             <button
               type="button"
-              className={clsx("btn", "self-end")}
+              className="btn self-end btn-success"
               onClick={() => setModalOpen(true)}
             >
-              <FontAwesomeIcon icon={faAdd} /> Add tier
+              <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
             </button>
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Rules</h2>
+            <h2 className={styles.formHeader}>Rules</h2>
             {data.rules.map((rule) => (
               <p className="flex justify-between" key={rule}>
                 <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
@@ -274,19 +274,19 @@ export default function Index() {
               />
               <button
                 type="button"
-                className={clsx("btn")}
+                className="btn btn-success"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
                 }}
               >
-                <FontAwesomeIcon icon={faAdd} /> Add rule
+                <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add rule
               </button>
             </div>
           </div>
 
           <div className={clsx(styles.field, "gap-2")}>
-            <h2 className="text-xl font-bold">Socials</h2>
+            <h2 className={styles.formHeader}>Socials</h2>
             <div className="flex items-baseline gap-2">
               <label className={clsx(styles.label, "w-20")}>Twitter</label>
               <input
@@ -347,28 +347,28 @@ export default function Index() {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx("btn", "btn", "mx-2 mt-4")}
+          className="btn btn-primary mx-2 mt-4"
           disabled={rendering}
           type="button"
         >
           {rendering && (
             <>
-              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />{" "}
+              <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />{" "}
               Rendering...
             </>
           )}
           {!rendering && (
             <>
-              <FontAwesomeIcon icon={faSave} /> Save As Image
+              <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As Image
             </>
           )}
         </button>
         <button
           id="reset-button"
           onClick={onResetData}
-          className={clsx("btn", "mx-2 mt-2 w-auto self-end")}
+          className="btn btn-error mx-2 mt-2 w-auto self-end"
         >
-          <FontAwesomeIcon icon={faTrash} /> Reset
+          <FontAwesomeIcon className="mr-2" icon={faTrash} /> Reset
         </button>
       </section>
 
