@@ -1,5 +1,5 @@
 export const getNextId = () => {
-  return Math.random()
+  return Math.random().toString()
 }
 
 export function get(
