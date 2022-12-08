@@ -120,7 +120,7 @@ const BannerGenerator: React.FC = () => {
     const images: Image[] = uploads.map((file) => ({
       url: URL.createObjectURL(file),
       name: file.name,
-      id: Math.random().toString()
+      id: Math.random().toString(),
     }))
     setFiles(files.concat(images))
   }
