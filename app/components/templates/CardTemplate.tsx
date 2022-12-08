@@ -50,7 +50,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   colors,
   artistName,
 }) => {
-  const loading = useCustomFont(font)
+  const {loading} = useCustomFont(font)
   const backgroundColor = getBackgroundColor(colors.background)
   const hasSocialLinks = Object.values(links).some(Boolean)
 

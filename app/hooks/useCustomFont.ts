@@ -9,6 +9,7 @@ export const useCustomFont = (font?: FontFamily) => {
     if (font) {
       setLoading(true)
       loadFont(font)
+        .then(() => setLoading(false))
         .catch(console.error)
         .finally(() => setLoading(false))
     }
