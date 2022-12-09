@@ -211,7 +211,7 @@ export default function Index() {
 
           <div className={styles.field}>
             <h2 className={styles.formHeader}>Commission tiers</h2>
-            <div className="flex flex-col">
+            <div className="flex flex-col text-sm">
               {data.tiers.map((tier) => (
                 <div
                   className="flex grow justify-between leading-loose"
@@ -222,7 +222,7 @@ export default function Index() {
                   <div className="inline-flex gap-1">
                     <button
                       type="button"
-                      className="font-sm text-gray-700 hover:text-gray-800"
+                      className="text-gray-700 hover:text-gray-800"
                       title="Edit tier"
                       onClick={() => {
                         setTierToEdit(tier)
@@ -234,7 +234,7 @@ export default function Index() {
                     <button
                       type="button"
                       title="Remove tier"
-                      className="font-sm text-rose-500 hover:text-rose-600"
+                      className="text-rose-500 hover:text-rose-600"
                       onClick={() => onRemoveTier(tier)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -246,7 +246,7 @@ export default function Index() {
 
             <button
               type="button"
-              className="btn-success btn self-end"
+              className="btn-primary btn-sm btn self-end"
               onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
@@ -256,7 +256,7 @@ export default function Index() {
           <div className={styles.field}>
             <h2 className={styles.formHeader}>Rules</h2>
             {data.rules.map((rule) => (
-              <p className="flex justify-between" key={rule}>
+              <p className="flex justify-between text-sm" key={rule}>
                 <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
                   {rule}
                 </span>
@@ -281,7 +281,7 @@ export default function Index() {
               />
               <button
                 type="button"
-                className="btn-success btn"
+                className="btn-primary btn-sm btn"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
@@ -369,7 +369,7 @@ export default function Index() {
         <button
           id="download-button"
           onClick={createScreenshot}
-          className="btn-primary btn mx-2 mt-4"
+          className="btn-success btn mx-2 mt-4"
           disabled={rendering}
           type="button"
         >

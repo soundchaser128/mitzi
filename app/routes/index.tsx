@@ -25,12 +25,12 @@ export default () => (
             Mitzi can generate commission sheets and Twitter banners for you,
             right inside your browser.
           </p>
-          <div className="flex gap-2">
-            <Link className="btn-primary btn" to="/commission-sheet">
+          <div className="flex w-full gap-2">
+            <Link className="btn-primary btn flex-auto" to="/commission-sheet">
               <FontAwesomeIcon icon={faPaintBrush} className="mr-1" />
               Commission sheet generator
             </Link>
-            <Link className="btn-primary  btn" to="/banner">
+            <Link className="btn-primary btn flex-auto" to="/banner">
               <FontAwesomeIcon icon={faTwitter} className="mr-1" />
               Banner generator
             </Link>
