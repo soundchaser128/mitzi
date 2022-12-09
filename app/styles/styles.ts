@@ -1,6 +1,6 @@
 const styles = {
   label: "label",
-  input: "grow input input-secondary",
+  input: "grow input input-primary",
   field: "form-control",
   formHeader: "text-xl font-bold",
 }

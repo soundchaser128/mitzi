@@ -358,7 +358,7 @@ export default function Index() {
                 ([name, className]) => ({
                   text: name,
                   value: name,
-                  className: className,
+                  className: `${className} text-black`,
                 })
               )}
               onChange={(color) => setBackgroundColor(color.value)}

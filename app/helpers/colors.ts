@@ -1,3 +1,5 @@
+// import colors from 'tailwindcss/colors'
+
 export const BackgroundColors = {
   slate: "bg-slate-50",
   gray: "bg-gray-50",
