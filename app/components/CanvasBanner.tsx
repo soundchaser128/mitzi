@@ -20,6 +20,7 @@ const loadImage = async (url: string) => {
   element.src = url
   await new Promise<void>((resolve) => {
     element.addEventListener("load", () => {
+      console.log("image.onload", url)
       resolve()
     })
   })
@@ -51,12 +52,14 @@ function renderImages(
   height: number,
   files: Image[],
   imageElements: HTMLImageElement[]
-): Promise<void>[] {
+) {
   const imageWidth = Math.floor(width / files.length)
   const imageAspectRatio = new Fraction(aspectRatio).div(
     files.length === 0 ? 1 : files.length
   )
-  return files.map(async (image, idx) => {
+
+  for (let idx = 0; idx < files.length; idx++) {
+    const image = files[idx]
     const xPosition = idx * imageWidth
 
     const img = imageElements[idx]
@@ -87,7 +90,7 @@ function renderImages(
       imageWidth,
       height
     )
-  })
+  }
 }
 
 const useSetupCanvas = () => {
@@ -139,6 +142,7 @@ const CanvasBanner: React.FC<BannerProps> = ({
   logger("loaded images %O", images)
 
   useEffect(() => {
+    console.time("render")
     logger("rendering canvas content")
     if (!canvasRef.current || !canvasSize) {
       return
@@ -157,28 +161,22 @@ const CanvasBanner: React.FC<BannerProps> = ({
       return
     }
 
-    const inner = async () => {
-      await Promise.all(
-        renderImages(ctx, settings.aspectRatio, width, height, files, images)
-      )
+    renderImages(ctx, settings.aspectRatio, width, height, files, images)
+    logger("rendered all images, rendering text")
+    ctx.font = `8rem ${font?.family || "sans-serif"}`
+    logger("rendering with font '%s'", ctx.font)
 
-      logger("rendered all images, rendering text")
-      ctx.font = `8rem ${font?.family || "sans-serif"}`
-      logger("rendering with font '%s'", ctx.font)
-
-      ctx.textAlign = "center"
-      ctx.fillStyle = settings.fontColor
-      ctx.fillText(settings.text, width / 2, height / 2)
-      if (settings.textOutline) {
-        ctx.strokeStyle = "black"
-        ctx.lineWidth = 4
-        ctx.strokeText(settings.text, width / 2, height / 2)
-      }
-
-      logger("rendered text")
+    ctx.textAlign = "center"
+    ctx.fillStyle = settings.fontColor
+    ctx.fillText(settings.text, width / 2, height / 2)
+    if (settings.textOutline) {
+      ctx.strokeStyle = "black"
+      ctx.lineWidth = 4
+      ctx.strokeText(settings.text, width / 2, height / 2)
     }
 
-    inner().then().catch(console.error)
+    logger("rendered text")
+    console.timeEnd("render")
   }, [
     canvasSize,
     files,
@@ -188,7 +186,6 @@ const CanvasBanner: React.FC<BannerProps> = ({
     settings.fontColor,
     settings.text,
     settings.textOutline,
-    canvasRef,
   ])
 
   return (
