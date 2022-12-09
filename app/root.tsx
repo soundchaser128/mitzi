@@ -16,6 +16,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css"
 import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
 import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
 import {config} from "@fortawesome/fontawesome-svg-core"
+import ThemeToggle from "./components/ThemeToggle"
 config.autoAddCss = false /* eslint-disable import/first */
 
 export const links: LinksFunction = () => {
@@ -45,6 +46,7 @@ export default function App() {
       </head>
       <body>
         <Outlet />
+        <ThemeToggle />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

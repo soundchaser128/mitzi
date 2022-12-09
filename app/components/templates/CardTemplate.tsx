@@ -92,7 +92,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
     >
       {artistName && (
         <h1 className="text-4xl font-bold">
-          <span className="font-light">{artistName}</span>'s Commission Sheet
+          <span className="font-light">{artistName}'s</span> Commission Sheet
         </h1>
       )}
 

@@ -358,7 +358,6 @@ export default function Index() {
                 ([name, className]) => ({
                   text: name,
                   value: name,
-                  className: `${className} text-black`,
                 })
               )}
               onChange={(color) => setBackgroundColor(color.value)}
@@ -394,7 +393,7 @@ export default function Index() {
         </button>
       </section>
 
-      <section className="grow bg-white">
+      <section className="grow">
         <Preview {...data} />
       </section>
     </main>

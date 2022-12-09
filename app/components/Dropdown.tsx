@@ -39,9 +39,9 @@ const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
   return (
     <Combobox value={selected} onChange={handleChange}>
       <div id={id} className="relative mt-1">
-        <div className="relative w-full cursor-default overflow-hidden bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-300 sm:text-sm">
+        <div className="relative w-full cursor-default overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-sky-300 sm:text-sm">
           <Combobox.Input
-            className="w-full border-none py-2 pl-4 pr-10 text-sm leading-5 text-gray-700 focus:ring-0"
+            className="w-full rounded-lg border border-primary bg-base-100 py-2 pl-4 pr-10 text-sm leading-5 text-base-content focus:ring-0"
             displayValue={(value: DropdownValue | null) =>
               value?.text || placeholder
             }
@@ -62,9 +62,9 @@ const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
           leaveTo="opacity-0"
           afterLeave={() => setQuery("")}
         >
-          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredValues.length === 0 && query !== "" ? (
-              <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+              <div className="relative cursor-default select-none py-2 px-4 text-base-100">
                 Nothing found.
               </div>
             ) : (
@@ -73,7 +73,7 @@ const Dropdown: React.FC<Props> = ({values, onChange, id, placeholder}) => {
                   key={value.value}
                   className={({active}) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-primary text-white" : "text-gray-900"
+                      active ? "bg-primary text-white" : "text-base-content"
                     } ${value.className || ""}`
                   }
                   value={value}
