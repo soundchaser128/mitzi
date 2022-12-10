@@ -6,13 +6,14 @@ import {useDropzone} from "react-dropzone"
 
 const styles = {
   wrapper:
-    "flex w-full items-center justify-center rounded-xl border bg-white p-8 text-center text-lg text-black shadow-lg",
+    "flex w-full items-center justify-center rounded-xl border bg-white p-8 text-center text-lg text-black cursor-pointer",
 }
 interface Props {
   onUpload: (files: File[]) => void
   children?: React.ReactNode
   allowMultiple?: boolean
   doneAfterUpload?: boolean
+  button?: boolean
 }
 
 const FileDrop: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const FileDrop: React.FC<Props> = ({
   children,
   allowMultiple,
   doneAfterUpload,
+  button,
 }) => {
   const [uploaded, setUploaded] = useState(false)
   const onDrop = useCallback(
@@ -46,13 +48,19 @@ const FileDrop: React.FC<Props> = ({
 
   return (
     <div
-      className={clsx(styles.wrapper, uploaded && "opacity-50")}
+      className={
+        button
+          ? "btn-primary btn-lg btn"
+          : clsx(styles.wrapper, uploaded && "opacity-50")
+      }
       {...getRootProps()}
     >
       <input {...getInputProps()} />
       <FontAwesomeIcon
         icon={uploaded ? faCheck : faUpload}
-        className={clsx("h-8 w-8", uploaded && "text-green-500")}
+        className={
+          button ? "h-8 w-8" : clsx("h-8 w-8", uploaded && "text-green-500")
+        }
       />
       {children}
     </div>

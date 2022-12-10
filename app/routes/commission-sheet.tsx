@@ -15,12 +15,15 @@ import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import Dropdown from "~/components/Dropdown"
 import {useLoaderData} from "@remix-run/react"
-import type {FontFamiliy} from "~/helpers/fonts.server"
+import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
 import useRenderContent from "~/hooks/useRenderContent"
+import {Label} from "./banner"
+import type {Color} from "~/helpers/colors"
+import {BackgroundColors} from "~/helpers/colors"
 
 const localStorageKey = "savedCommissionData"
 
@@ -30,27 +33,27 @@ const initialState: CommissionSheet = {
   currency: "dollar",
   rules: ["Don't be a jerk", "Nothing illegal"],
   colors: {
-    background: "sky",
-    text: "blue",
+    background: "slate",
+    text: "green",
   },
   tiers: [
     {
       name: "Basic",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["One character", "Simple background"],
       price: 45,
       id: getNextId(),
     },
     {
       name: "Advanced",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["One character", "More elaborate background"],
       price: 55,
       id: getNextId(),
     },
     {
       name: "Premium",
-      image: "/images/placeholder.jpg",
+      image: null,
       info: ["Two characters", "Custom background scene"],
       price: 65,
       id: getNextId(),
@@ -86,7 +89,7 @@ export default function Index() {
     containerId: "preview-frame",
     fileName: `commission-sheet-${data.artistName}.png`,
   })
-  const fonts = useLoaderData<FontFamiliy[]>()
+  const fonts = useLoaderData<FontFamily[]>()
   const fontDropdownValues = fonts.map((font) => ({
     text: font.family,
     value: font.family,
@@ -95,6 +98,11 @@ export default function Index() {
   const onChange = (key: keyof CommissionSheet, value: any) => {
     const newState = {...data, [key]: value}
     setData(newState)
+  }
+
+  const setBackgroundColor = (color: string) => {
+    const colorValue = color as Color
+    setData({...data, colors: {background: colorValue, text: data.colors.text}})
   }
 
   const onRemoveTier = (tier: CommissionTier) => {
@@ -146,7 +154,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-indigo-50 p-2 shadow-xl">
+      <section className="z-10 flex flex-col bg-base-200 p-2 shadow-xl">
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -159,7 +167,7 @@ export default function Index() {
 
         <form className="flex flex-col gap-4">
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Select currency</h2>
+            <h2 className={styles.formHeader}>Select currency</h2>
             <div className="flex gap-4">
               <div>
                 <input
@@ -171,7 +179,7 @@ export default function Index() {
                   checked={data.currency === "dollar"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label htmlFor="dollar-radio">US Dollar ($)</label>
+                <Label htmlFor="dollar-radio">US Dollar ($)</Label>
               </div>
               <div>
                 <input
@@ -183,7 +191,7 @@ export default function Index() {
                   checked={data.currency === "euro"}
                   onChange={(e) => onChange("currency", e.target.value)}
                 />
-                <label htmlFor="euro-radio">Euro (€)</label>
+                <Label htmlFor="euro-radio">Euro (€)</Label>
               </div>
             </div>
           </div>
@@ -200,8 +208,8 @@ export default function Index() {
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Commission tiers</h2>
-            <div className="flex flex-col">
+            <h2 className={styles.formHeader}>Commission tiers</h2>
+            <div className="flex flex-col text-sm">
               {data.tiers.map((tier) => (
                 <div
                   className="flex grow justify-between leading-loose"
@@ -212,7 +220,7 @@ export default function Index() {
                   <div className="inline-flex gap-1">
                     <button
                       type="button"
-                      className="font-sm text-gray-700 hover:text-gray-800"
+                      className="text-gray-700 hover:text-gray-800"
                       title="Edit tier"
                       onClick={() => {
                         setTierToEdit(tier)
@@ -224,7 +232,7 @@ export default function Index() {
                     <button
                       type="button"
                       title="Remove tier"
-                      className="font-sm text-rose-500 hover:text-rose-600"
+                      className="text-rose-500 hover:text-rose-600"
                       onClick={() => onRemoveTier(tier)}
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -236,21 +244,17 @@ export default function Index() {
 
             <button
               type="button"
-              className={clsx(
-                styles.button.base,
-                styles.button.green,
-                "self-end"
-              )}
+              className="btn-primary btn-sm btn self-end"
               onClick={() => setModalOpen(true)}
             >
-              <FontAwesomeIcon icon={faAdd} /> Add tier
+              <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
             </button>
           </div>
 
           <div className={styles.field}>
-            <h2 className="text-xl font-bold">Rules</h2>
+            <h2 className={styles.formHeader}>Rules</h2>
             {data.rules.map((rule) => (
-              <p className="flex justify-between" key={rule}>
+              <p className="flex justify-between text-sm" key={rule}>
                 <span className="w-80 overflow-hidden overflow-ellipsis whitespace-nowrap leading-loose">
                   {rule}
                 </span>
@@ -275,19 +279,19 @@ export default function Index() {
               />
               <button
                 type="button"
-                className={clsx(styles.button.base, styles.button.green)}
+                className="btn-primary btn-sm btn"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
                 }}
               >
-                <FontAwesomeIcon icon={faAdd} /> Add rule
+                <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add rule
               </button>
             </div>
           </div>
 
           <div className={clsx(styles.field, "gap-2")}>
-            <h2 className="text-xl font-bold">Socials</h2>
+            <h2 className={styles.formHeader}>Socials</h2>
             <div className="flex items-baseline gap-2">
               <label className={clsx(styles.label, "w-20")}>Twitter</label>
               <input
@@ -343,41 +347,51 @@ export default function Index() {
               }
             />
           </div>
+
+          <div className={styles.field}>
+            <h2 className="text-xl font-bold">Select background color</h2>
+            <Dropdown
+              placeholder="Select color"
+              values={Object.entries(BackgroundColors).map(
+                ([name, className]) => ({
+                  text: name,
+                  value: name,
+                })
+              )}
+              onChange={(color) => setBackgroundColor(color.value)}
+            />
+          </div>
         </form>
 
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
+          className="btn-success btn mx-2 mt-4"
           disabled={rendering}
           type="button"
         >
           {rendering && (
             <>
-              <FontAwesomeIcon icon={faSpinner} className="animate-spin" />{" "}
+              <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />{" "}
               Rendering...
             </>
           )}
           {!rendering && (
             <>
-              <FontAwesomeIcon icon={faSave} /> Save As Image
+              <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As Image
             </>
           )}
         </button>
         <button
           id="reset-button"
           onClick={onResetData}
-          className={clsx(
-            styles.button.base,
-            styles.button.red,
-            "mx-2 mt-2 w-auto self-end"
-          )}
+          className="btn-error btn mx-2 mt-2 w-auto self-end"
         >
-          <FontAwesomeIcon icon={faTrash} /> Reset
+          <FontAwesomeIcon className="mr-2" icon={faTrash} /> Reset
         </button>
       </section>
 
-      <section className="grow bg-white">
+      <section className="grow">
         <Preview {...data} />
       </section>
     </main>

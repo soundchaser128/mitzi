@@ -12,7 +12,7 @@ const Preview: React.FC<CommissionSheet> = (props) => {
   const Template = templates[props.template]
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-white">
+    <div className="flex min-h-screen w-full items-center justify-center bg-gray-400">
       <Template {...props} />
     </div>
   )

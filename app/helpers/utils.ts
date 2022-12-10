@@ -1,7 +1,5 @@
-import {nanoid} from "nanoid"
-
 export const getNextId = () => {
-  return nanoid()
+  return Math.random().toString()
 }
 
 export function get(

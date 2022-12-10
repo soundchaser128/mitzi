@@ -1,18 +1,19 @@
 import {useEffect, useState} from "react"
-import {loadFont} from "./fonts.client"
-import type {FontFamiliy} from "./fonts.server"
+import {loadFont} from "../helpers/fonts.client"
+import type {FontFamily} from "../helpers/fonts.server"
 
-export const useCustomFont = (font?: FontFamiliy) => {
+export const useCustomFont = (font?: FontFamily) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (font) {
       setLoading(true)
       loadFont(font)
+        .then(() => setLoading(false))
         .catch(console.error)
         .finally(() => setLoading(false))
     }
   }, [font])
 
-  return loading
+  return {loading, font}
 }

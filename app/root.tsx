@@ -13,9 +13,18 @@ import {
 } from "@remix-run/react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
+import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
+import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
+import {config} from "@fortawesome/fontawesome-svg-core"
+import ThemeToggle from "./components/ThemeToggle"
+config.autoAddCss = false /* eslint-disable import/first */
 
 export const links: LinksFunction = () => {
-  return [{rel: "stylesheet", href: tailwindStylesheetUrl}]
+  return [
+    {rel: "stylesheet", href: tailwindStylesheetUrl},
+    {rel: "stylesheet", href: reactCropStyles},
+    {rel: "stylesheet", href: iconStyles},
+  ]
 }
 
 export let headers: HeadersFunction = () => {
@@ -30,13 +39,14 @@ export const meta: MetaFunction = () => ({
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" data-theme="light">
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body>
         <Outlet />
+        <ThemeToggle />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

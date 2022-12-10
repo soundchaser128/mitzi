@@ -1,31 +1,35 @@
-import {useState} from "react"
+import React, {useState} from "react"
 import FileDrop from "~/components/FileDrop"
 import styles from "../styles/styles"
-import Fraction from "fraction.js"
-import clsx from "clsx"
-import {nanoid} from "nanoid"
+
 import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {
   faAngleDown,
   faAngleUp,
+  faEdit,
   faSave,
   faSpinner,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import {useLoaderData} from "@remix-run/react"
-import type {FontFamiliy} from "~/helpers/fonts.server"
+import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
-import {useCustomFont} from "~/helpers/hooks"
 import Dropdown from "~/components/Dropdown"
+import type {Crop, PixelCrop} from "react-image-crop"
+import CanvasBanner from "~/components/CanvasBanner"
 
 const aspectRatios = [
   {
     text: "Twitter (3:1)",
     value: "3/1",
+  },
+  {
+    text: "Patreon (4:1)",
+    value: "4/1",
   },
   {
     text: "Pixiv (2:1)",
@@ -37,17 +41,6 @@ const aspectRatios = [
   },
 ]
 
-function calculateAspectRatioForImage(
-  aspectRatio: Fraction,
-  numberOfImages: number
-): Fraction {
-  if (numberOfImages === 0) {
-    return aspectRatio
-  } else {
-    return aspectRatio.div(numberOfImages)
-  }
-}
-
 function clamp(n: number, min: number, max: number) {
   if (n > max) {
     return max
@@ -58,20 +51,21 @@ function clamp(n: number, min: number, max: number) {
   }
 }
 
-interface Image {
+export interface Image {
   url: string
-  position: {x: number; y: number}
+  crop?: PixelCrop
   name: string
   id: string
 }
 
-interface Settings {
+export interface Settings {
   darken: boolean
   lowerContrast: boolean
   text: string
-  font?: FontFamiliy
+  font?: FontFamily
   fontColor: string
   aspectRatio: string
+  textOutline: boolean
 }
 
 const defaultSettings: Settings = {
@@ -80,6 +74,7 @@ const defaultSettings: Settings = {
   text: "Your Name",
   fontColor: "#ffffff",
   aspectRatio: aspectRatios[0].value,
+  textOutline: false,
 }
 
 export const loader: LoaderFunction = async () => {
@@ -92,8 +87,19 @@ export const loader: LoaderFunction = async () => {
   }
 }
 
+export const Label: React.FC<{children: React.ReactNode; htmlFor?: string}> = ({
+  children,
+  htmlFor,
+}) => {
+  return (
+    <label htmlFor={htmlFor} className="label grow">
+      <span className="label-text font-semibold">{children}</span>
+    </label>
+  )
+}
+
 const BannerGenerator: React.FC = () => {
-  const fonts = useLoaderData<FontFamiliy[]>()
+  const fonts = useLoaderData<FontFamily[]>()
   const fontDropdownValues = fonts.map((font) => ({
     text: font.family,
     value: font.family,
@@ -108,27 +114,15 @@ const BannerGenerator: React.FC = () => {
     containerId: "banner-frame",
     fileName: `${bannerName}-banner-${settings.text}.png`,
   })
-  const loading = useCustomFont(settings.font)
+  const [modalImage, setModalImage] = useState<Image | null>(null)
 
   const onUpload = (uploads: File[]) => {
-    const images = uploads.map((file) => ({
+    const images: Image[] = uploads.map((file) => ({
       url: URL.createObjectURL(file),
-      position: {x: 50, y: 50},
       name: file.name,
-      id: nanoid(),
+      id: Math.random().toString(),
     }))
     setFiles(files.concat(images))
-  }
-
-  const onFilePositionChange = (
-    index: number,
-    axis: "x" | "y",
-    value: number
-  ) => {
-    const newFiles = produce(files, (draft) => {
-      draft[index].position[axis] = value
-    })
-    setFiles(newFiles)
   }
 
   const onChange = (key: keyof Settings, value: any) => {
@@ -137,6 +131,21 @@ const BannerGenerator: React.FC = () => {
 
   const onRemoveImage = (image: Image) => {
     setFiles((files) => files.filter((f) => f.id !== image.id))
+  }
+
+  const onChangeImageCrop = (id: string, crop: Crop) => {
+    setFiles((files) =>
+      produce(files, (draft) => {
+        const file = draft.find((f) => f.id === id)
+        file!.crop = {
+          x: crop.x,
+          y: crop.y,
+          width: crop.width,
+          height: crop.height,
+          unit: "px",
+        }
+      })
+    )
   }
 
   const onShiftImage = (idx: number, direction: "up" | "down") => {
@@ -154,20 +163,18 @@ const BannerGenerator: React.FC = () => {
     )
   }
 
-  const imageRatio = calculateAspectRatioForImage(
-    new Fraction(settings.aspectRatio),
-    files.length
-  ).simplify()
-  const aspectRatio = `${imageRatio.n} / ${imageRatio.d}`
+  const onEditCrop = (image: Image) => {
+    setModalImage(image)
+  }
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-violet-100 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit flex-col overflow-y-auto bg-base-200 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
-          className={clsx(styles.button.base, styles.button.green, "mx-2 mt-4")}
-          disabled={rendering}
+          className="btn-success btn mx-2 mt-2"
+          disabled={rendering || files.length === 0}
           type="button"
         >
           {rendering && (
@@ -178,13 +185,13 @@ const BannerGenerator: React.FC = () => {
           )}
           {!rendering && (
             <>
-              <FontAwesomeIcon icon={faSave} /> Save As Image
+              <FontAwesomeIcon icon={faSave} className="mr-2" /> Save As Image
             </>
           )}
         </button>
         <form className="mt-4 flex flex-col gap-4 px-2">
           <div className="flex flex-col">
-            <label className={styles.label}>Choose format</label>
+            <Label>Choose format</Label>
             <Dropdown
               placeholder="Choose banner format"
               values={aspectRatios}
@@ -193,7 +200,7 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Your name</label>
+            <Label>Your name</Label>
             <input
               placeholder="Enter your name"
               type="text"
@@ -203,32 +210,28 @@ const BannerGenerator: React.FC = () => {
             />
           </div>
           <div className="flex flex-row justify-between">
-            <label htmlFor="darken-image" className={styles.label}>
-              Darken images?
-            </label>
+            <Label htmlFor="darken-image">Darken images?</Label>
             <input
               id="darken-image"
               type="checkbox"
               checked={settings.darken}
               onChange={(e) => onChange("darken", e.target.checked)}
-              className="h-6 w-6 self-end"
+              className="h-6 w-6 self-center"
             />
           </div>
           <div className="flex flex-row justify-between">
-            <label htmlFor="lower-contrast" className={styles.label}>
-              Lower contrast?
-            </label>
+            <Label htmlFor="lower-contrast">Lower contrast?</Label>
             <input
               id="lower-contrast"
               type="checkbox"
               checked={settings.lowerContrast}
               onChange={(e) => onChange("lowerContrast", e.target.checked)}
-              className="h-6 w-6 self-end"
+              className="h-6 w-6 self-center"
             />
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Select font</label>
+            <Label>Select font</Label>
             <Dropdown
               id="fonts-dropdown"
               values={fontDropdownValues}
@@ -243,7 +246,7 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Select font color</label>
+            <Label>Select font color</Label>
 
             <input
               type="color"
@@ -255,56 +258,33 @@ const BannerGenerator: React.FC = () => {
           </div>
 
           <div className="flex flex-col">
-            <label className={styles.label}>Upload images</label>
-            <FileDrop allowMultiple onUpload={onUpload} />
+            <Label>Upload images</Label>
+            <FileDrop button allowMultiple onUpload={onUpload} />
           </div>
         </form>
         {files.length > 0 && (
           <div className="mt-4">
             <div className="flex flex-col gap-4 ">
               {files.map((file, idx) => (
-                <div key={file.id}>
-                  <p>
-                    File <strong>{file.name}</strong>
-                  </p>
-                  <div className="flex flex-col">
-                    <label>Position left/right</label>
-                    <input
-                      min="0"
-                      max="100"
-                      title="Adjust image X position"
-                      type="range"
-                      value={file.position.x}
-                      onChange={(event) =>
-                        onFilePositionChange(
-                          idx,
-                          "x",
-                          event.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <label>Position up/down</label>
-                    <input
-                      min="0"
-                      max="100"
-                      title="Adjist image Y position"
-                      type="range"
-                      value={file.position.y}
-                      onChange={(event) =>
-                        onFilePositionChange(
-                          idx,
-                          "y",
-                          event.target.valueAsNumber
-                        )
-                      }
-                    />
-                  </div>
+                <div className="flex flex-col" key={file.id}>
                   <div className="flex justify-between">
-                    <div>
+                    <span>
+                      File <strong>{file.name}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      className="btn-secondary btn-sm btn"
+                      onClick={() => onEditCrop(file)}
+                    >
+                      <FontAwesomeIcon icon={faEdit} className="mr-1" />
+                      <strong>Edit</strong>
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <div className="flex gap-1">
                       <button
-                        className="p-1 hover:text-gray-800"
+                        className="inline-flex items-center justify-center rounded-full border border-black p-1 hover:border-gray-800 hover:text-gray-800"
                         type="button"
                         title="Shift up"
                         onClick={() => onShiftImage(idx, "up")}
@@ -313,7 +293,7 @@ const BannerGenerator: React.FC = () => {
                       </button>
 
                       <button
-                        className="p-1 hover:text-gray-800"
+                        className="inline-flex items-center justify-center rounded-full border border-black p-1 hover:border-gray-800 hover:text-gray-800"
                         type="button"
                         title="Shift down"
                         onClick={() => onShiftImage(idx, "down")}
@@ -337,49 +317,15 @@ const BannerGenerator: React.FC = () => {
           </div>
         )}
       </section>
-      <section className="grow bg-neutral-500">
-        <div className="flex min-h-screen w-full items-center justify-center">
-          <div
-            id="banner-frame"
-            className={clsx(
-              "container relative flex h-auto max-w-full grid-flow-row bg-white"
-              // [withPadding && "gap-2 p-2"]
-            )}
-            style={{
-              aspectRatio: settings.aspectRatio,
-              fontFamily: settings.font ? settings.font.family : undefined,
-            }}
-          >
-            {files.length === 0 && (
-              <div className="flex h-full w-full items-center justify-center text-xl">
-                Upload some images to get started.
-              </div>
-            )}
-            {files.map((image, idx) => (
-              <img
-                className={clsx(
-                  "object-cover",
-                  settings.darken && "brightness-50",
-                  settings.lowerContrast && "contrast-50"
-                )}
-                src={image.url}
-                key={idx}
-                alt="user-uploaded data"
-                style={{
-                  aspectRatio,
-                  objectPosition: `${image.position.x}% ${image.position.y}%`,
-                }}
-              />
-            ))}
-            {files.length > 0 && (
-              <h1
-                className="absolute top-0 right-0 z-10 flex h-full w-full items-center justify-center text-8xl font-bold"
-                style={{color: settings.fontColor}}
-              >
-                {settings.text}
-              </h1>
-            )}
-          </div>
+      <section className="grow">
+        <div className="flex min-h-screen w-full items-center justify-center bg-neutral">
+          <CanvasBanner
+            files={files}
+            settings={settings}
+            onChangeImageCrop={onChangeImageCrop}
+            modalImage={modalImage}
+            setModalImage={setModalImage}
+          />
         </div>
       </section>
     </main>
