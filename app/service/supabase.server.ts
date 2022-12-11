@@ -1,10 +1,19 @@
-import {createClient} from "@supabase/supabase-js"
 import type {CommissionSheet} from "~/helpers/types"
 import type {Database} from "./database.types"
+import {createClient} from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_KEY!
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
+if (!process.env.PUBLIC_SUPABASE_URL)
+  throw new Error("ENV: PUBLIC_SUPABASE_URL is required")
+
+if (!process.env.SUPABASE_SERVICE_ROLE)
+  throw new Error("ENV: SUPABASE_SERVICE_ROLE is required")
+
+if (!process.env.SERVER_URL) throw new Error("ENV: SERVER_URL is required")
+
+export const supabase = createClient<Database>(
+  process.env.PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE
+)
 
 export async function createCommissionSheet(
   userId: string,

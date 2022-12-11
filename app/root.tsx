@@ -1,6 +1,7 @@
 import type {
   HeadersFunction,
   LinksFunction,
+  LoaderFunction,
   MetaFunction,
 } from "@remix-run/node"
 import {
@@ -10,6 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react"
 
 import tailwindStylesheetUrl from "./styles/tailwind.css"
@@ -37,7 +39,18 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 })
 
+export const loader: LoaderFunction = () => {
+  return {
+    env: {
+      PUBLIC_SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL,
+      PUBLIC_SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY,
+    },
+  }
+}
+
 export default function App() {
+  const {env} = useLoaderData<Window>()
+
   return (
     <html lang="en" data-theme="light">
       <head>
@@ -50,6 +63,12 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.env = ${JSON.stringify(env)}`,
+          }}
+        />
       </body>
     </html>
   )

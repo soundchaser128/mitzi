@@ -17,7 +17,7 @@ export default () => (
         <img
           src="/android-chrome-192x192.png"
           alt="A smug cat"
-          className="max-w-sm rounded-lg shadow-2xl"
+          className="max-w-sm rounded-lg"
         />
         <div className="flex flex-col gap-4 ">
           <h1 className="text-3xl font-bold">Mitzi</h1>
