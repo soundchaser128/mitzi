@@ -5,6 +5,7 @@ import {authenticator} from "~/service/auth.server"
 import {supabase} from "~/service/supabase.client"
 
 export const action = async ({request}: ActionArgs) => {
+  console.log(request)
   await authenticator.authenticate("sb-magic-link", request, {
     successRedirect: "/",
     failureRedirect: "/auth/login",

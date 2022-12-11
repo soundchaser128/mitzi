@@ -69,7 +69,12 @@ export default function Screen() {
               id="email"
             />
           </div>
-          <button className="btn-success btn">
+          <button
+            className={clsx(
+              "btn-success btn",
+              transition.submission && "btn-disabled"
+            )}
+          >
             <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
             {transition.submission
               ? "Sending you a magic link"

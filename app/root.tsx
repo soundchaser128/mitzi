@@ -8,6 +8,7 @@ import {
   Links,
   LiveReload,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -19,6 +20,9 @@ import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
 import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
 import {config} from "@fortawesome/fontawesome-svg-core"
 import ThemeToggle from "./components/ThemeToggle"
+import {magicLinkStrategy} from "./service/auth.server"
+import {User} from "@supabase/supabase-js"
+
 config.autoAddCss = false /* eslint-disable import/first */
 
 export const links: LinksFunction = () => {
@@ -39,8 +43,17 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 })
 
-export const loader: LoaderFunction = () => {
+type Data = {
+  env: Record<string, string>
+  user?: User
+}
+
+export const loader: LoaderFunction = async ({request}) => {
+  const session = await magicLinkStrategy.checkSession(request)
+  console.log({session})
+
   return {
+    user: session?.user,
     env: {
       PUBLIC_SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL,
       PUBLIC_SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY,
@@ -49,7 +62,7 @@ export const loader: LoaderFunction = () => {
 }
 
 export default function App() {
-  const {env} = useLoaderData<Window>()
+  const {env, user} = useLoaderData<Data>()
 
   return (
     <html lang="en" data-theme="light">
@@ -58,12 +71,21 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div className="flex flex-col">
+          <nav className="flex justify-between bg-base-200 p-2">
+            <span className="font-bold">Mitzi</span>
+
+            <NavLink className="link" to="/auth/login">
+              {user ? `Logged in as ${user.email}` : "Log in"}
+            </NavLink>
+          </nav>
+
+          <Outlet />
+        </div>
         <ThemeToggle />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-
         <script
           dangerouslySetInnerHTML={{
             __html: `window.env = ${JSON.stringify(env)}`,
