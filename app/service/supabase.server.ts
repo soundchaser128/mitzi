@@ -2,7 +2,7 @@ import {createClient} from "@supabase/supabase-js"
 import type {CommissionSheet} from "~/helpers/types"
 import type {Database} from "./database.types"
 
-const supabaseUrl = "https://dnsqbcyzmgduxpuieiba.supabase.co"
+const supabaseUrl = process.env.SUPABASE_URL!
 const supabaseKey = process.env.SUPABASE_KEY!
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
 
@@ -43,4 +43,11 @@ export async function createCommissionSheet(
       user_id: userId,
     }))
   )
+}
+
+export async function fetchCommissionSheet(artistName: string) {
+  return await supabase
+    .from("commission_sheet")
+    .select("*")
+    .eq("artist_name", artistName)
 }

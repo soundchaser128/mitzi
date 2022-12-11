@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import FileDrop from "~/components/FileDrop"
-import styles from "../styles/styles"
+import styles from "../../styles/styles"
 
 import produce from "immer"
 import useRenderContent from "~/hooks/useRenderContent"

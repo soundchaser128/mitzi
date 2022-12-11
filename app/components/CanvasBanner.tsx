@@ -1,7 +1,7 @@
 import Fraction from "fraction.js"
 import {useEffect, useMemo, useRef, useState} from "react"
 import type {Crop} from "react-image-crop"
-import type {Image, Settings} from "~/routes/banner"
+import type {Image, Settings} from "~/routes/create/banner"
 import ImageCropModal from "./ImageCropModal"
 import {useCustomFont} from "~/hooks/useCustomFont"
 import createLogger from "~/helpers/log"
