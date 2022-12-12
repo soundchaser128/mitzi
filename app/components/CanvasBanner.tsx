@@ -20,7 +20,7 @@ const loadImage = async (url: string) => {
   element.src = url
   await new Promise<void>((resolve) => {
     element.addEventListener("load", () => {
-      console.log("image.onload", url)
+      // console.log("image.onload", url)
       resolve()
     })
   })

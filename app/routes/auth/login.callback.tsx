@@ -5,7 +5,6 @@ import {authenticator} from "~/service/auth.server"
 import {supabase} from "~/service/supabase.client"
 
 export const action = async ({request}: ActionArgs) => {
-  console.log(request)
   await authenticator.authenticate("sb-magic-link", request, {
     successRedirect: "/",
     failureRedirect: "/auth/login",
@@ -18,7 +17,6 @@ export default function LoginCallback() {
   useEffect(() => {
     const {data: authListener} = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log(event, session)
         if (event === "SIGNED_IN") {
           const formData = new FormData()
           formData.append("session", JSON.stringify(session))

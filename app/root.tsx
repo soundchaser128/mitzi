@@ -22,6 +22,7 @@ import {config} from "@fortawesome/fontawesome-svg-core"
 import ThemeToggle from "./components/ThemeToggle"
 import {authenticator, magicLinkStrategy} from "./service/auth.server"
 import type {User} from "@supabase/supabase-js"
+import {supabase} from "./service/supabase.server"
 
 config.autoAddCss = false /* eslint-disable import/first */
 
@@ -50,9 +51,10 @@ type Data = {
 
 export const loader: LoaderFunction = async ({request}) => {
   const session = await authenticator.isAuthenticated(request)
+  const user = await supabase.auth.getUser(session?.access_token)
 
   return {
-    user: session?.user,
+    user: user?.data?.user,
     env: {
       PUBLIC_SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL,
       PUBLIC_SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY,
@@ -62,7 +64,6 @@ export const loader: LoaderFunction = async ({request}) => {
 
 export default function App() {
   const {env, user} = useLoaderData<Data>()
-  console.log(user)
 
   return (
     <html lang="en" data-theme="light">
@@ -75,9 +76,15 @@ export default function App() {
           <nav className="flex justify-between bg-base-200 p-2">
             <span className="font-bold">Mitzi</span>
 
-            <NavLink className="link" to="/auth/login">
-              {user ? `Logged in as ${user.email}` : "Log in"}
-            </NavLink>
+            {user ? (
+              <span>
+                Logged in as <strong>{user.email}</strong>
+              </span>
+            ) : (
+              <NavLink className="link" to="/auth/login">
+                Log in
+              </NavLink>
+            )}
           </nav>
 
           <Outlet />

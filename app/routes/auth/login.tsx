@@ -7,18 +7,16 @@ import {
   sessionStorage,
 } from "~/service/auth.server"
 import {supabase} from "~/service/supabase.server"
-import styles from "~/styles/styles"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons"
 import clsx from "clsx"
 
 export const loader = async ({request}: LoaderArgs) => {
   await magicLinkStrategy.checkSession(request, {
-    successRedirect: "/private",
+    successRedirect: "/",
   })
 
   const session = await sessionStorage.getSession(request.headers.get("Cookie"))
-
   const error = session.get(authenticator.sessionErrorKey)
 
   return json({error})
