@@ -46,7 +46,7 @@ const CommissionTierModal: React.FC<{
       <div className="mt-4">
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
           <div className="flex flex-col">
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium text-base-content">
               Tier name
             </label>
             <input
@@ -59,7 +59,7 @@ const CommissionTierModal: React.FC<{
           </div>
 
           <div className="flex flex-col">
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium text-base-content">
               Price
             </label>
             <input
@@ -72,16 +72,16 @@ const CommissionTierModal: React.FC<{
           </div>
 
           <div className="flex flex-col">
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium text-base-content">
               Upload image
             </label>
             <FileDrop doneAfterUpload onUpload={onUpload} />
           </div>
 
           <div className="flex flex-col">
-            <label className="mb-1 block font-medium text-gray-700">Info</label>
+            <label className="mb-1 block font-medium text-base-content">Info</label>
             <textarea
-              className="textarea-bordered textarea text-sm "
+              className="textarea-bordered textarea textarea-primary text-sm "
               value={newTier.info.join("\n")}
               onChange={(e) => onChange("info", e.target.value.split("\n"))}
               rows={8}

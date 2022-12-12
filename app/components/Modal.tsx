@@ -61,13 +61,13 @@ const Modal: React.FC<ModalProps> = ({
             >
               <Dialog.Panel
                 className={clsx(
-                  "w-full max-w-md transform overflow-hidden rounded-2xl bg-sky-50 p-6 text-left align-middle shadow-xl transition-all",
+                  "w-full max-w-md transform overflow-hidden rounded-2xl bg-base-100 p-6 text-left align-middle shadow-xl transition-all",
                   sizeClass
                 )}
               >
                 <Dialog.Title
                   as="h3"
-                  className="text-xl font-bold leading-6 text-gray-900"
+                  className="text-xl font-bold leading-6 text-base-content"
                 >
                   {title}
                 </Dialog.Title>

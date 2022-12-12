@@ -156,7 +156,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-base-200 p-2 shadow-xl">
+      <section className="z-10 flex flex-col bg-base-200 p-2 shadow-xl max-screen overflow-y-scroll">
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -217,12 +217,12 @@ export default function Index() {
                   className="flex grow justify-between leading-loose"
                   key={tier.id}
                 >
-                  {tier.name}
+                  {tier.name || "<no name>"}
 
                   <div className="inline-flex gap-1">
                     <button
                       type="button"
-                      className="text-gray-700 hover:text-gray-800"
+                      className="text-base-content"
                       title="Edit tier"
                       onClick={() => {
                         setTierToEdit(tier)
@@ -393,7 +393,7 @@ export default function Index() {
         </button>
       </section>
 
-      <section className="grow">
+      <section className="grow bg-gray-400">
         <Preview {...data} />
       </section>
     </main>

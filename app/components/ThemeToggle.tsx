@@ -31,8 +31,9 @@ const ThemeToggle: React.FC<Props> = ({className}) => {
 
   return (
     <button
+      id="theme-toggle"
       className={clsx(
-        "btn-primary btn absolute bottom-4 right-4 text-xl",
+        "btn-primary btn fixed bottom-4 right-4 text-xl",
         className
       )}
       onClick={() => toggleDarkMode()}

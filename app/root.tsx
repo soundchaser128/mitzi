@@ -5,6 +5,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node"
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -23,6 +24,8 @@ import ThemeToggle from "./components/ThemeToggle"
 import {authenticator, magicLinkStrategy} from "./service/auth.server"
 import type {User} from "@supabase/supabase-js"
 import {supabase} from "./service/supabase.server"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faCat} from "@fortawesome/free-solid-svg-icons"
 
 config.autoAddCss = false /* eslint-disable import/first */
 
@@ -73,15 +76,18 @@ export default function App() {
       </head>
       <body>
         <div className="flex flex-col">
-          <nav className="flex justify-between bg-base-200 p-2">
-            <span className="font-bold">Mitzi</span>
+          <nav className="flex justify-between bg-base-200 p-2 text-lg">
+            <Link to="/" className="font-bold">
+              <FontAwesomeIcon icon={faCat} className="mr-2" />
+              Mitzi
+            </Link>
 
             {user ? (
               <span>
                 Logged in as <strong>{user.email}</strong>
               </span>
             ) : (
-              <NavLink className="link" to="/auth/login">
+              <NavLink className="link-primary" to="/auth/login">
                 Log in
               </NavLink>
             )}

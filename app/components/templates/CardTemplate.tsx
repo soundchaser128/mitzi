@@ -1,7 +1,7 @@
 import {faSpinner} from "@fortawesome/free-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import clsx from "clsx"
-import React from "react"
+import React, {Suspense} from "react"
 import {getBackgroundColor, getTextColors} from "~/helpers/colors"
 import type {CommissionTier, CommissionSheet} from "~/helpers/types"
 import {formatPrice} from "~/helpers/utils"
@@ -24,7 +24,7 @@ const CardTemplateTier: React.FC<{
           />
         )}
         {!tier.image && (
-          <div className="font-xl flex aspect-square h-96 items-center justify-center rounded-t-3xl bg-primary text-white">
+          <div className="flex aspect-square h-96 items-center justify-center rounded-t-3xl bg-primary text-2xl text-white">
             No image
           </div>
         )}
@@ -55,24 +55,10 @@ const CardTemplate: React.FC<CommissionSheet> = ({
   colors,
   artistName,
 }) => {
-  const {loading} = useCustomFont(font)
+  useCustomFont(font)
   const backgroundColor = getBackgroundColor(colors.background)
   const textColors = getTextColors(colors.text)
   const hasSocialLinks = Object.values(links).some(Boolean)
-
-  if (loading) {
-    return (
-      <div
-        id="preview-frame"
-        className={clsx(
-          "flex w-auto items-center justify-center",
-          backgroundColor
-        )}
-      >
-        <FontAwesomeIcon icon={faSpinner} className="h-12 w-12 animate-spin" />
-      </div>
-    )
-  }
 
   return (
     <div
@@ -92,7 +78,7 @@ const CardTemplate: React.FC<CommissionSheet> = ({
     >
       {artistName && (
         <h1 className="text-4xl font-bold">
-          <span className="font-light">{artistName}'s</span> Commission Sheet
+          {artistName}'s Commission Sheet
         </h1>
       )}
 
