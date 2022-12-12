@@ -91,7 +91,7 @@ export default function App() {
                 Logged in as <strong>{user.email}</strong>
               </span>
             ) : (
-              <NavLink className="link-primary" to="/auth/login">
+              <NavLink className="link" to="/auth/login">
                 Log in
               </NavLink>
             )}
