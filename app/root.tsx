@@ -20,8 +20,8 @@ import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
 import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
 import {config} from "@fortawesome/fontawesome-svg-core"
 import ThemeToggle from "./components/ThemeToggle"
-import {magicLinkStrategy} from "./service/auth.server"
-import {User} from "@supabase/supabase-js"
+import {authenticator, magicLinkStrategy} from "./service/auth.server"
+import type {User} from "@supabase/supabase-js"
 
 config.autoAddCss = false /* eslint-disable import/first */
 
@@ -49,8 +49,7 @@ type Data = {
 }
 
 export const loader: LoaderFunction = async ({request}) => {
-  const session = await magicLinkStrategy.checkSession(request)
-  console.log({session})
+  const session = await authenticator.isAuthenticated(request)
 
   return {
     user: session?.user,
@@ -63,6 +62,7 @@ export const loader: LoaderFunction = async ({request}) => {
 
 export default function App() {
   const {env, user} = useLoaderData<Data>()
+  console.log(user)
 
   return (
     <html lang="en" data-theme="light">

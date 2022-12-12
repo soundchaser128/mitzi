@@ -1,6 +1,6 @@
 import {useEffect} from "react"
 import type {ActionArgs} from "@remix-run/node"
-import {useSubmit} from "@remix-run/react"
+import {useFetcher} from "@remix-run/react"
 import {authenticator} from "~/service/auth.server"
 import {supabase} from "~/service/supabase.client"
 
@@ -13,7 +13,7 @@ export const action = async ({request}: ActionArgs) => {
 }
 
 export default function LoginCallback() {
-  const submit = useSubmit()
+  const fetcher = useFetcher()
 
   useEffect(() => {
     const {data: authListener} = supabase.auth.onAuthStateChange(
@@ -23,13 +23,13 @@ export default function LoginCallback() {
           const formData = new FormData()
           formData.append("session", JSON.stringify(session))
 
-          submit(formData, {method: "post"})
+          fetcher.submit(formData, {method: "post"})
         }
       }
     )
 
     return () => authListener.subscription.unsubscribe()
-  }, [submit])
+  }, [fetcher])
 
   return null
 }
