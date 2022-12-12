@@ -4,7 +4,9 @@ import {useState} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {
   faAdd,
+  faCloudUpload,
   faEdit,
+  faFloppyDisk,
   faSave,
   faSpinner,
   faTrash,
@@ -14,7 +16,7 @@ import useLocalStorage from "~/hooks/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import Dropdown from "~/components/Dropdown"
-import {useLoaderData} from "@remix-run/react"
+import {useLoaderData, useOutletContext} from "@remix-run/react"
 import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {LoaderFunction} from "@remix-run/server-runtime"
@@ -24,6 +26,7 @@ import useRenderContent from "~/hooks/useRenderContent"
 import {Label} from "./banner"
 import type {Color} from "~/helpers/colors"
 import {BackgroundColors} from "~/helpers/colors"
+import type {OutletContext} from "~/root"
 
 const localStorageKey = "savedCommissionData"
 
@@ -81,6 +84,7 @@ export const sleep = (ms: number) =>
   new Promise((resolve) => window.setTimeout(resolve, ms))
 
 export default function Index() {
+  const {user} = useOutletContext<OutletContext>()
   const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
   const [newRule, setNewRule] = useState("")
@@ -156,7 +160,7 @@ export default function Index() {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="z-10 flex flex-col bg-base-200 p-2 shadow-xl max-screen overflow-y-scroll">
+      <section className="max-screen z-10 flex flex-col overflow-y-scroll bg-base-200 p-2 shadow-xl">
         {modalOpen && (
           <AddNewTierModal
             openModal={() => setModalOpen(true)}
@@ -365,29 +369,43 @@ export default function Index() {
           </div>
         </form>
 
-        <button
-          id="download-button"
-          onClick={createScreenshot}
-          className="btn-success btn mx-2 mt-4"
-          disabled={rendering}
-          type="button"
-        >
-          {rendering && (
-            <>
-              <FontAwesomeIcon icon={faSpinner} className="mr-2 animate-spin" />{" "}
-              Rendering...
-            </>
-          )}
-          {!rendering && (
-            <>
-              <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As Image
-            </>
-          )}
-        </button>
+        <div className="btn-group mt-4 gap-2">
+          <button
+            id="download-button"
+            onClick={createScreenshot}
+            className="btn btn-success flex-auto"
+            disabled={rendering}
+            type="button"
+          >
+            {rendering && (
+              <>
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className="mr-2 animate-spin"
+                />{" "}
+                Rendering...
+              </>
+            )}
+            {!rendering && (
+              <>
+                <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As Image
+              </>
+            )}
+          </button>
+          <button
+            id="publish-button"
+            className={clsx(
+              "btn btn-success flex-auto",
+              !user && "btn-disabled"
+            )}
+          >
+            <FontAwesomeIcon icon={faCloudUpload} className="mr-2" /> Publish
+          </button>
+        </div>
         <button
           id="reset-button"
           onClick={onResetData}
-          className="btn-error btn mx-2 mt-2 w-auto self-end"
+          className="btn btn-error mx-2 mt-2 w-auto self-end"
         >
           <FontAwesomeIcon className="mr-2" icon={faTrash} /> Reset
         </button>

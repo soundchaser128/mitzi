@@ -21,13 +21,17 @@ import reactCropStyles from "react-image-crop/dist/ReactCrop.css"
 import iconStyles from "@fortawesome/fontawesome-svg-core/styles.css"
 import {config} from "@fortawesome/fontawesome-svg-core"
 import ThemeToggle from "./components/ThemeToggle"
-import {authenticator, magicLinkStrategy} from "./service/auth.server"
+import {authenticator} from "./service/auth.server"
 import type {User} from "@supabase/supabase-js"
 import {supabase} from "./service/supabase.server"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCat} from "@fortawesome/free-solid-svg-icons"
 
 config.autoAddCss = false /* eslint-disable import/first */
+
+export interface OutletContext {
+  user?: User
+}
 
 export const links: LinksFunction = () => {
   return [
@@ -93,7 +97,7 @@ export default function App() {
             )}
           </nav>
 
-          <Outlet />
+          <Outlet context={{user}} />
         </div>
         <ThemeToggle />
         <ScrollRestoration />

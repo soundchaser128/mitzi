@@ -79,9 +79,11 @@ const CommissionTierModal: React.FC<{
           </div>
 
           <div className="flex flex-col">
-            <label className="mb-1 block font-medium text-base-content">Info</label>
+            <label className="mb-1 block font-medium text-base-content">
+              Info
+            </label>
             <textarea
-              className="textarea-bordered textarea textarea-primary text-sm "
+              className="textarea-bordered textarea-primary textarea text-sm "
               value={newTier.info.join("\n")}
               onChange={(e) => onChange("info", e.target.value.split("\n"))}
               rows={8}

@@ -169,7 +169,7 @@ const BannerGenerator: React.FC = () => {
 
   return (
     <main className="relative flex min-h-screen bg-white">
-      <section className="flex max-h-screen max-w-xs min-w-fit flex-col overflow-y-auto bg-base-200 p-2 shadow-xl">
+      <section className="flex max-h-screen min-w-fit max-w-xs flex-col overflow-y-auto bg-base-200 p-2 shadow-xl">
         <button
           id="download-button"
           onClick={createScreenshot}
@@ -268,7 +268,7 @@ const BannerGenerator: React.FC = () => {
               {files.map((file, idx) => (
                 <div className="flex flex-col" key={file.id}>
                   <div className="flex justify-between">
-                    <span className="overflow-hidden text-ellipsis max-w-xs whitespace-nowrap">
+                    <span className="max-w-xs overflow-hidden text-ellipsis whitespace-nowrap">
                       File <strong>{file.name}</strong>
                     </span>
                     <button
