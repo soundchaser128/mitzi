@@ -26,9 +26,9 @@ export const magicLinkStrategy = new SupabaseStrategy(
     const form = await req.formData()
     const session = form?.get("session")
 
-    if (typeof session !== "string")
+    if (typeof session !== "string") {
       throw new AuthorizationError("session not found")
-
+    }
     return JSON.parse(session)
   }
 )

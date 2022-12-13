@@ -27,6 +27,7 @@ import {Label} from "./banner"
 import type {Color} from "~/helpers/colors"
 import {BackgroundColors} from "~/helpers/colors"
 import type {OutletContext} from "~/root"
+import {createCommissionSheet} from "~/service/supabase.server"
 
 const localStorageKey = "savedCommissionData"
 
@@ -155,6 +156,12 @@ export default function Index() {
       )
     ) {
       setData(initialState)
+    }
+  }
+
+  const onPublish = async () => {
+    if (user) {
+      await createCommissionSheet(user.id, data)
     }
   }
 
@@ -398,6 +405,8 @@ export default function Index() {
               "btn btn-success flex-auto",
               !user && "btn-disabled"
             )}
+            onClick={onPublish}
+            type="button"
           >
             <FontAwesomeIcon icon={faCloudUpload} className="mr-2" /> Publish
           </button>
