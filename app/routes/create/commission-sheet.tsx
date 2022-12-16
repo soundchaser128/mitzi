@@ -6,7 +6,6 @@ import {
   faAdd,
   faCloudUpload,
   faEdit,
-  faFloppyDisk,
   faSave,
   faSpinner,
   faTrash,
@@ -16,7 +15,7 @@ import useLocalStorage from "~/hooks/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import Dropdown from "~/components/Dropdown"
-import {Form, useLoaderData, useOutletContext, useSubmit} from "@remix-run/react"
+import {useLoaderData, useOutletContext, useFetcher} from "@remix-run/react"
 import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
 import type {ActionFunction, LoaderFunction} from "@remix-run/server-runtime"
@@ -82,15 +81,20 @@ export const loader: LoaderFunction = async () => {
 }
 
 export const action: ActionFunction = async ({request}) => {
-  const form = await request.formData();
-  console.log(Array.from(form.entries()))
-  return null;
+  const form = await request.formData()
+  const string = form.get("body") as string
+  const userId = form.get("userId") as string
+  const body = JSON.parse(string) as CommissionSheet
+  await createCommissionSheet(userId, body)
+
+  return null
 }
 
 export const sleep = (ms: number) =>
   new Promise((resolve) => window.setTimeout(resolve, ms))
 
 export default function Index() {
+  const fetcher = useFetcher()
   const {user} = useOutletContext<OutletContext>()
   const [data, setData] = useLocalStorage(localStorageKey, initialState)
   const [modalOpen, setModalOpen] = useState(false)
@@ -165,6 +169,16 @@ export default function Index() {
     }
   }
 
+  const onPublish = (event: React.FormEvent) => {
+    event.preventDefault()
+    if (user) {
+      const form = new FormData()
+      form.append("userId", user.id)
+      form.append("body", JSON.stringify(data))
+      fetcher.submit(form, {method: "post"})
+    }
+  }
+
   return (
     <main className="relative flex min-h-screen bg-white">
       <section className="max-screen z-10 flex flex-col overflow-y-scroll bg-base-200 p-2 shadow-xl">
@@ -178,7 +192,11 @@ export default function Index() {
           />
         )}
 
-        <Form method="post" className="flex flex-col gap-4">
+        <form
+          onSubmit={onPublish}
+          method="post"
+          className="flex flex-col gap-4"
+        >
           <div className={styles.field}>
             <h2 className={styles.formHeader}>Select currency</h2>
             <div className="flex gap-4">
@@ -257,7 +275,7 @@ export default function Index() {
 
             <button
               type="button"
-              className="btn btn-primary btn-sm self-end"
+              className="btn-primary btn-sm btn self-end"
               onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
@@ -292,7 +310,7 @@ export default function Index() {
               />
               <button
                 type="button"
-                className="btn btn-primary btn-sm"
+                className="btn-primary btn-sm btn"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
@@ -410,7 +428,7 @@ export default function Index() {
               <FontAwesomeIcon icon={faCloudUpload} className="mr-2" /> Publish
             </button>
           </div>
-        </Form>
+        </form>
 
         <button
           id="reset-button"

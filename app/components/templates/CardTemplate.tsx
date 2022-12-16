@@ -24,10 +24,9 @@ const CardTemplateTier: React.FC<{
           />
         ) : (
           <div className="flex aspect-square h-96 items-center justify-center rounded-t-3xl bg-primary text-2xl text-white">
-          No image
-        </div>
+            No image
+          </div>
         )}
-
 
         <div className="mt-4 px-10">
           <header className="mb-4 text-center">

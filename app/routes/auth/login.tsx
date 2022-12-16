@@ -23,21 +23,27 @@ export const loader = async ({request}: LoaderArgs) => {
 }
 
 export const action = async ({request}: ActionArgs) => {
-  const form = await request.clone().formData()
+  const form = await request.formData()
   const email = form?.get("email")
 
-  if (!email) return json({error: {message: "Email is required"}}, 400)
-  if (typeof email !== "string")
-    return json({error: {message: "Email must be a string"}}, 400)
+  if (!email) {
+    return json({error: {message: "Email is required"}}, 400)
+  }
 
+  if (typeof email !== "string") {
+    return json({error: {message: "Email must be a string"}}, 400)
+  }
+  const url = new URL(request.url)
   const {error} = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${process.env.SERVER_URL}/auth/login/callback`,
+      emailRedirectTo: `${url.origin}/auth/login/callback`,
     },
   })
 
-  if (error) return json({error: {message: error.message}})
+  if (error) {
+    return json({error: {message: error.message}})
+  }
 
   throw redirect("/auth/login/check-your-emails")
 }
