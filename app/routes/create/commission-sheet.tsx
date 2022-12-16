@@ -16,10 +16,10 @@ import useLocalStorage from "~/hooks/useLocalStorage"
 import AddNewTierModal from "~/components/CommissionTierModal"
 import styles from "~/styles/styles"
 import Dropdown from "~/components/Dropdown"
-import {useLoaderData, useOutletContext} from "@remix-run/react"
+import {Form, useLoaderData, useOutletContext, useSubmit} from "@remix-run/react"
 import type {FontFamily} from "~/helpers/fonts.server"
 import {fetchFonts} from "~/helpers/fonts.server"
-import type {LoaderFunction} from "@remix-run/server-runtime"
+import type {ActionFunction, LoaderFunction} from "@remix-run/server-runtime"
 import {json} from "@remix-run/server-runtime"
 import {getNextId} from "~/helpers/utils"
 import useRenderContent from "~/hooks/useRenderContent"
@@ -79,6 +79,12 @@ export const loader: LoaderFunction = async () => {
     console.error(e)
     return json([])
   }
+}
+
+export const action: ActionFunction = async ({request}) => {
+  const form = await request.formData();
+  console.log(Array.from(form.entries()))
+  return null;
 }
 
 export const sleep = (ms: number) =>
@@ -159,12 +165,6 @@ export default function Index() {
     }
   }
 
-  const onPublish = async () => {
-    if (user) {
-      await createCommissionSheet(user.id, data)
-    }
-  }
-
   return (
     <main className="relative flex min-h-screen bg-white">
       <section className="max-screen z-10 flex flex-col overflow-y-scroll bg-base-200 p-2 shadow-xl">
@@ -178,7 +178,7 @@ export default function Index() {
           />
         )}
 
-        <form className="flex flex-col gap-4">
+        <Form method="post" className="flex flex-col gap-4">
           <div className={styles.field}>
             <h2 className={styles.formHeader}>Select currency</h2>
             <div className="flex gap-4">
@@ -257,7 +257,7 @@ export default function Index() {
 
             <button
               type="button"
-              className="btn-primary btn-sm btn self-end"
+              className="btn btn-primary btn-sm self-end"
               onClick={() => setModalOpen(true)}
             >
               <FontAwesomeIcon className="mr-2" icon={faAdd} /> Add tier
@@ -292,7 +292,7 @@ export default function Index() {
               />
               <button
                 type="button"
-                className="btn-primary btn-sm btn"
+                className="btn btn-primary btn-sm"
                 onClick={() => {
                   setNewRule("")
                   setData({...data, rules: [...data.rules, newRule]})
@@ -374,43 +374,44 @@ export default function Index() {
               onChange={(color) => setBackgroundColor(color.value)}
             />
           </div>
-        </form>
 
-        <div className="btn-group mt-4 gap-2">
-          <button
-            id="download-button"
-            onClick={createScreenshot}
-            className="btn btn-success flex-auto"
-            disabled={rendering}
-            type="button"
-          >
-            {rendering && (
-              <>
-                <FontAwesomeIcon
-                  icon={faSpinner}
-                  className="mr-2 animate-spin"
-                />{" "}
-                Rendering...
-              </>
-            )}
-            {!rendering && (
-              <>
-                <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As Image
-              </>
-            )}
-          </button>
-          <button
-            id="publish-button"
-            className={clsx(
-              "btn btn-success flex-auto",
-              !user && "btn-disabled"
-            )}
-            onClick={onPublish}
-            type="button"
-          >
-            <FontAwesomeIcon icon={faCloudUpload} className="mr-2" /> Publish
-          </button>
-        </div>
+          <div className="btn-group mt-4 gap-2">
+            <button
+              id="download-button"
+              onClick={createScreenshot}
+              className="btn btn-success flex-auto"
+              disabled={rendering}
+              type="button"
+            >
+              {rendering && (
+                <>
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    className="mr-2 animate-spin"
+                  />{" "}
+                  Rendering...
+                </>
+              )}
+              {!rendering && (
+                <>
+                  <FontAwesomeIcon className="mr-2" icon={faSave} /> Save As
+                  Image
+                </>
+              )}
+            </button>
+            <button
+              id="publish-button"
+              className={clsx(
+                "btn btn-success flex-auto",
+                !user && "btn-disabled"
+              )}
+              type="submit"
+            >
+              <FontAwesomeIcon icon={faCloudUpload} className="mr-2" /> Publish
+            </button>
+          </div>
+        </Form>
+
         <button
           id="reset-button"
           onClick={onResetData}

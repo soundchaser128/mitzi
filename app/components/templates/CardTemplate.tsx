@@ -16,18 +16,18 @@ const CardTemplateTier: React.FC<{
   return (
     <article className="relative">
       <div className="flex flex-col rounded-3xl bg-white pb-8 shadow-lg">
-        {tier.image && (
+        {tier.image ? (
           <img
             src={tier.image}
             alt={tier.name}
             className="aspect-square max-h-96 rounded-t-3xl object-cover object-center"
           />
-        )}
-        {!tier.image && (
+        ) : (
           <div className="flex aspect-square h-96 items-center justify-center rounded-t-3xl bg-primary text-2xl text-white">
-            No image
-          </div>
+          No image
+        </div>
         )}
+
 
         <div className="mt-4 px-10">
           <header className="mb-4 text-center">
